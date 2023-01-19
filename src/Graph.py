@@ -55,6 +55,11 @@ class Graph:
         if node in self._nodes:
             self._nodes.remove(node)
 
+    def get_random_node(self):
+        node = random.choice(self._nodes)
+
+        return node
+
     def __str__(self):
         res = "--- Nodes ---"
 

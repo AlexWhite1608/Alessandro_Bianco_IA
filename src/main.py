@@ -1,12 +1,12 @@
-from Graph import Graph as G
-from Graph import Node as node
+from Graph import Graph as Graph
+from Graph import Node as Node
 
 
 # CONST VALUES #
-N_NODES = 5
+N_NODES = 10
 
 def main():
-    graph = G(N_NODES)
+    graph = Graph(N_NODES)
     print(graph)
 
 
