@@ -1,5 +1,13 @@
+from Graph import Graph as G
+from Graph import Node as node
+
+
+# CONST VALUES #
+N_NODES = 5
+
 def main():
-    print('hello')
+    graph = G(N_NODES)
+    print(graph)
 
 
 if __name__ == "__main__":
