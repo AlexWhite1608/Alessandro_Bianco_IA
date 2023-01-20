@@ -1,5 +1,7 @@
 import random
 import networkx as nx
+import matplotlib.pyplot as plt
+import math
 
 
 class Node:
@@ -59,6 +61,26 @@ class Graph:
         node = random.choice(self._nodes)
 
         return node
+
+    def get_dict_coords(self):
+        """
+        :return: a dict containing key: node, value: tuple of x,y coords
+
+        """
+        dict_coords = {}
+        for node in self._nodes:
+            dict_coords[node.get_label()] = tuple([node.get_x(), node.get_y()])
+
+        return dict_coords
+
+    def visualize(self, center_node, save=False):
+        pos = nx.kamada_kawai_layout(self._graph, ) # TODO: usa kamada_kawai con pos=dict di coppie nodo-coordinata
+
+        if save:
+            plt.savefig("/img/graph.png")
+
+        nx.draw(self._graph, pos, with_labels=True, node_size=900, node_color="tab:green")
+        plt.show()
 
     def __str__(self):
         res = "--- Nodes ---"

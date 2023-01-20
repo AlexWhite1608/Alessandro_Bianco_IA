@@ -4,6 +4,7 @@ from Graph import Node as Node
 
 # CONST VALUES #
 N_NODES = 10
+SAVE_GRAPH = False
 
 def main():
     graph = Graph(N_NODES)
