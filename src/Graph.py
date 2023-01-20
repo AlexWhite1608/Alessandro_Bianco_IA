@@ -1,7 +1,7 @@
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
-import math
+import scipy as sp
 
 
 class Node:
@@ -74,12 +74,25 @@ class Graph:
         return dict_coords
 
     def visualize(self, center_node, save=False):
-        pos = nx.kamada_kawai_layout(self._graph, ) # TODO: usa kamada_kawai con pos=dict di coppie nodo-coordinata
+        """
+        Visualization of the given graph centered on center_node coordinates
+
+        :param center_node: node which the graph should be centered on
+        :param save: If True -> saves graph in a .png
+
+        """
+
+        center_node_x = center_node.get_x()
+        center_node_y = center_node.get_y()
+
+        center_coords = tuple([center_node_x, center_node_y])
+
+        pos = nx.planar_layout(self._graph, center=center_coords)
 
         if save:
             plt.savefig("/img/graph.png")
 
-        nx.draw(self._graph, pos, with_labels=True, node_size=900, node_color="tab:green")
+        nx.draw(self._graph, pos, with_labels=True, node_size=500, node_color="tab:green")
         plt.show()
 
     def __str__(self):
