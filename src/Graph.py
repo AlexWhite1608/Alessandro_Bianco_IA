@@ -44,11 +44,17 @@ def create_random_nodes(n_nodes):
 class Graph:
 
     def __init__(self, n_nodes):
+        """
+        Builds the graph given n_nodes Nodes. It also sets the coordinates from each node to be used for the
+        graph generation
+
+        :param n_nodes (int)
+
+        """
         self.n_nodes = n_nodes
         self._nodes = create_random_nodes(self.n_nodes)
 
         self._graph = nx.Graph()
-        # self._graph.add_nodes_from(self._nodes)
 
         for node in self._nodes:
             pos_x = node.get_x()
@@ -90,9 +96,10 @@ class Graph:
 
         """
         if save:
-            plt.savefig("/img/graph.png")
+            plt.savefig("graph.png")
 
-        nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True)
+        options = {"node_size": 600, "font_size": 10, "node_color": 'green'}
+        nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True, **options)
 
         plt.show()
 

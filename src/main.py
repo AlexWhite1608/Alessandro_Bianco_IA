@@ -10,7 +10,7 @@ def main():
     graph = Graph(N_NODES)
     print(graph)
 
-    graph.visualize()
+    graph.visualize(SAVE_GRAPH)
 
 
 if __name__ == "__main__":
