@@ -3,7 +3,7 @@ from Graph import Node as Node
 
 
 # CONST VALUES #
-N_NODES = 6
+N_NODES = 8
 SAVE_GRAPH = False
 
 def main():

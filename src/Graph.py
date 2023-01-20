@@ -87,7 +87,7 @@ class Graph:
 
         center_coords = tuple([center_node_x, center_node_y])
 
-        pos = nx.planar_layout(self._graph, center=center_coords)
+        pos = nx.random_layout(self._graph, center=center_coords)
 
         if save:
             plt.savefig("/img/graph.png")
