@@ -55,6 +55,9 @@ class Graph:
             pos_y = node.get_y()
             self._graph.add_node(node.get_label(), pos=(pos_x, pos_y))
 
+        pos = self.get_dict_coords()
+        nx.set_node_attributes(self._graph, pos, 'coord')
+
     def add_node(self, node):       # TODO: VANNO AGGIUNTI AL GRAFO!
         if node not in self._nodes:
             self._nodes.append(node)
@@ -86,21 +89,10 @@ class Graph:
         :param save: If True -> saves graph in a .png
 
         """
-
-        # center_node_x = center_node.get_x()
-        # center_node_y = center_node.get_y()
-        #
-        # center_coords = tuple([center_node_x, center_node_y])
-        #
-        # pos = nx.random_layout(self._graph, center=center_coords)
-
         if save:
             plt.savefig("/img/graph.png")
 
         nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True)
-
-        pyplot.gca().invert_yaxis()
-        pyplot.gca().invert_xaxis()
 
         plt.show()
 
