@@ -1,3 +1,4 @@
+import math
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -76,6 +77,25 @@ class Graph:
         node = random.choice(self._nodes)
 
         return node
+
+    def find_nearest_node(self, input_node):
+        """
+        Returns the nearest node from the input_node using Euclidean distance
+
+        :param input_node:
+        :return: nearest node to input_node
+
+        """
+        _node_distance = {}
+        for _node in self._nodes:
+            if input_node == _node:
+                continue
+            _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
+                                                          (_node.get_x(), _node.get_y()))
+        min_label = min(_node_distance, key=_node_distance.get)
+
+        return self._nodes[int(min_label)]
+
 
     def get_dict_coords(self):
         """
