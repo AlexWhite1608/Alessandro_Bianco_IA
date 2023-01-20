@@ -1,6 +1,7 @@
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+from matplotlib import pyplot
 import scipy as sp
 
 
@@ -47,13 +48,18 @@ class Graph:
         self._nodes = create_random_nodes(self.n_nodes)
 
         self._graph = nx.Graph()
-        self._graph.add_nodes_from(self._nodes)
+        # self._graph.add_nodes_from(self._nodes)
 
-    def add_node(self, node):
+        for node in self._nodes:
+            pos_x = node.get_x()
+            pos_y = node.get_y()
+            self._graph.add_node(node.get_label(), pos=(pos_x, pos_y))
+
+    def add_node(self, node):       # TODO: VANNO AGGIUNTI AL GRAFO!
         if node not in self._nodes:
             self._nodes.append(node)
 
-    def remove_node(self, node):
+    def remove_node(self, node):        # TODO: VANNO RIMOSSI DAL GRAFO!
         if node in self._nodes:
             self._nodes.remove(node)
 
@@ -73,26 +79,29 @@ class Graph:
 
         return dict_coords
 
-    def visualize(self, center_node, save=False):
+    def visualize(self, save=False):
         """
-        Visualization of the given graph centered on center_node coordinates
+        Visualization of the given graph
 
-        :param center_node: node which the graph should be centered on
         :param save: If True -> saves graph in a .png
 
         """
 
-        center_node_x = center_node.get_x()
-        center_node_y = center_node.get_y()
-
-        center_coords = tuple([center_node_x, center_node_y])
-
-        pos = nx.random_layout(self._graph, center=center_coords)
+        # center_node_x = center_node.get_x()
+        # center_node_y = center_node.get_y()
+        #
+        # center_coords = tuple([center_node_x, center_node_y])
+        #
+        # pos = nx.random_layout(self._graph, center=center_coords)
 
         if save:
             plt.savefig("/img/graph.png")
 
-        nx.draw(self._graph, pos, with_labels=True, node_size=500, node_color="tab:green")
+        nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True)
+
+        pyplot.gca().invert_yaxis()
+        pyplot.gca().invert_xaxis()
+
         plt.show()
 
     def __str__(self):
