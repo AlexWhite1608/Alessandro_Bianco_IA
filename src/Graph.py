@@ -30,12 +30,12 @@ def create_random_nodes(n_nodes):
     :return: list of Node
 
     """
-    alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "Z"]
+
     nodes = []
     for i in range(n_nodes):
         x = random.randint(1, 100)
         y = random.randint(1, 100)
-        label = random.choice(alphabet) + '_' + str(x) + str(y)
+        label = str(i)
         nodes.append(Node(label, x, y))
 
     return nodes
