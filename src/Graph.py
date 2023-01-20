@@ -82,15 +82,14 @@ class Graph:
         """
         Returns the nearest node from the input_node using Euclidean distance
 
-        :param input_node:
+        :param input_node (Node)
         :return: nearest node to input_node
 
         """
         _node_distance = {}
         for _node in self._nodes:
-            if input_node == _node:
-                continue
-            _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
+            if input_node != _node:
+                _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
                                                           (_node.get_x(), _node.get_y()))
         min_label = min(_node_distance, key=_node_distance.get)
 
