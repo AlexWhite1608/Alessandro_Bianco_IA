@@ -10,8 +10,10 @@ def main():
     graph = Graph(N_NODES)
     print(graph)
 
-    random_node = graph.get_random_node()
-    print(random_node.get_label(), graph.find_nearest_node(random_node).get_label())
+    random_node1 = graph.get_random_node()
+    print(random_node1.get_label())
+
+    graph.generate_edges(random_node1)
 
     graph.visualize(SAVE_GRAPH)
 

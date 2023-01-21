@@ -2,24 +2,6 @@ import math
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
-from matplotlib import pyplot
-import scipy as sp
-
-
-class Node:
-    def __init__(self, label, x, y):
-        self._x = x
-        self._y = y
-        self._label = label
-
-    def get_x(self):
-        return self._x
-
-    def get_y(self):
-        return self._y
-
-    def get_label(self):
-        return self._label
 
 
 def create_random_nodes(n_nodes):
@@ -40,6 +22,22 @@ def create_random_nodes(n_nodes):
         nodes.append(Node(label, x, y))
 
     return nodes
+
+
+class Node:
+    def __init__(self, label, x, y):
+        self._x = x
+        self._y = y
+        self._label = label
+
+    def get_x(self):
+        return self._x
+
+    def get_y(self):
+        return self._y
+
+    def get_label(self):
+        return self._label
 
 
 class Graph:
@@ -65,11 +63,11 @@ class Graph:
         pos = self.get_dict_coords()
         nx.set_node_attributes(self._graph, pos, 'coord')
 
-    def add_node(self, node):       # TODO: VANNO AGGIUNTI AL GRAFO!
+    def add_node(self, node):  # TODO: VANNO AGGIUNTI AL GRAFO!
         if node not in self._nodes:
             self._nodes.append(node)
 
-    def remove_node(self, node):        # TODO: VANNO RIMOSSI DAL GRAFO!
+    def remove_node(self, node):  # TODO: VANNO RIMOSSI DAL GRAFO!
         if node in self._nodes:
             self._nodes.remove(node)
 
@@ -90,11 +88,10 @@ class Graph:
         for _node in self._nodes:
             if input_node != _node:
                 _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
-                                                          (_node.get_x(), _node.get_y()))
+                                                              (_node.get_x(), _node.get_y()))
         min_label = min(_node_distance, key=_node_distance.get)
 
         return self._nodes[int(min_label)]
-
 
     def get_dict_coords(self):
         """
@@ -107,17 +104,53 @@ class Graph:
 
         return dict_coords
 
+    def build_edge(self, node1, node2):
+        """
+        Builds an edge between node1 and node2 if they are not the same node
+
+        :param node1: (Node)
+        :param node2: (Node)
+        """
+
+        if node1 is not node2:
+            self._graph.add_edge(node1.get_label(), node2.get_label())
+
+    def generate_edges(self, central_node, visited_nodes=None):
+        """
+        Generates the edges of the given graph starting from central_node and finding the nearest node to it. Then
+        recursively applies the function to the new central_node until there are no more connections left in the graph
+
+        :param: central_node (Node)
+        :param: visited_nodes (list of Nodes)
+        :return: a list of edges
+
+        """
+        if visited_nodes is None:
+            visited_nodes = []
+
+        # inserisco nearest_node in visited_nodes (verifico se c'è già)
+        # creo arco tra central_node e nearest_node (devo verificare che non si intreccino o è scontato?)
+        # finisco quando in visited_nodes ci sono tutti i nodi?
+
+        while len(visited_nodes) < self.n_nodes:
+            visited_nodes.append(central_node)
+            nearest_node = self.find_nearest_node(central_node)
+
+            self.build_edge(central_node, nearest_node)
+
+            return self.generate_edges(nearest_node, visited_nodes)
+
+
     def visualize(self, save=False):
         """
         Visualization of the given graph
 
-        :param save: If True -> saves graph in a .png
-
+        :param save: (bool) If True -> saves graph in a .png
         """
         if save:
             plt.savefig("graph.png")
 
-        options = {"node_size": 600, "font_size": 10, "node_color": 'green'}
+        options = {"node_size": 500, "font_size": 13, "node_color": 'green'}
         nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True, **options)
 
         plt.show()
