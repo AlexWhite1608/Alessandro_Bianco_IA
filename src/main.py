@@ -11,7 +11,7 @@ def main():
     print(graph)
 
     random_node1 = graph.get_random_node()
-    print(random_node1.get_label())
+    print("RANDOM: ", random_node1.get_label())
 
     graph.generate_edges(random_node1)
 

@@ -137,6 +137,7 @@ class Graph:
             nearest_node = self.find_nearest_node(central_node)
 
             self.build_edge(central_node, nearest_node)
+            print("EDGE TRA: ", central_node.get_label(), nearest_node.get_label())
 
             return self.generate_edges(nearest_node, visited_nodes)
 
