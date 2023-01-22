@@ -52,6 +52,7 @@ class Graph:
         """
         self.n_nodes = n_nodes
         self._nodes = create_random_nodes(self.n_nodes)
+        self.edges = []
 
         self._graph = nx.Graph()
 
@@ -76,6 +77,22 @@ class Graph:
 
         return node
 
+    def check_edge(self, node1, node2):
+        """
+        Returns True if there is an edge between the two nodes, return False if there is not
+
+        :param node1: (Node)
+        :param node2: (Node)
+
+        """
+        edge1 = tuple((node1.get_label(), node2.get_label()))
+        edge2 = tuple((node2.get_label(), node1.get_label()))
+
+        if edge1 in self.edges or edge2 in self.edges:
+            return True
+        else:
+            return False
+
     def find_nearest_node(self, input_node):
         """
         Returns the nearest node from the input_node using Euclidean distance
@@ -86,9 +103,11 @@ class Graph:
         """
         _node_distance = {}
         for _node in self._nodes:
-            if input_node != _node:
-                _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
-                                                              (_node.get_x(), _node.get_y()))
+            if input_node != _node:  # SE NON C'è UN ARCO TRA CURRENT E _NODE!
+                if not self.check_edge(input_node, _node):
+                    _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
+                                                                  (_node.get_x(), _node.get_y()))
+
         min_label = min(_node_distance, key=_node_distance.get)
 
         return self._nodes[int(min_label)]
@@ -100,7 +119,7 @@ class Graph:
         """
         dict_coords = {}
         for node in self._nodes:
-            dict_coords[node.get_label()] = tuple([node.get_x(), node.get_y()])
+            dict_coords[node.get_label()] = tuple((node.get_x(), node.get_y()))
 
         return dict_coords
 
@@ -114,6 +133,10 @@ class Graph:
 
         if node1 is not node2:
             self._graph.add_edge(node1.get_label(), node2.get_label())
+            edge = tuple((node1.get_label(), node2.get_label()))
+
+            if edge not in self.edges:
+                self.edges.append((node1.get_label(), node2.get_label()))
 
     def generate_edges(self, central_node, visited_nodes=None):
         """
@@ -132,15 +155,19 @@ class Graph:
         # creo arco tra central_node e nearest_node (devo verificare che non si intreccino o è scontato?)
         # finisco quando in visited_nodes ci sono tutti i nodi?
 
+        # TODO: CONTROLLA INCROCI!
+
+        i = len(visited_nodes)
         while len(visited_nodes) < self.n_nodes:
             visited_nodes.append(central_node)
+
             nearest_node = self.find_nearest_node(central_node)
 
             self.build_edge(central_node, nearest_node)
-            print("EDGE TRA: ", central_node.get_label(), nearest_node.get_label())
+
+            print("ARCO TRA: ", central_node.get_label(), nearest_node.get_label())
 
             return self.generate_edges(nearest_node, visited_nodes)
-
 
     def visualize(self, save=False):
         """
