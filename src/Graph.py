@@ -112,7 +112,7 @@ class Graph:
 
     def find_nearest_node(self, input_node):
         """
-        Returns the nearest node from the input_node using Euclidean distance
+        Returns the nearest node from the input_node using Euclidean distance. It must satisfy all the conditions!
 
         :param input_node (Node)
         :return: nearest node to input_node
