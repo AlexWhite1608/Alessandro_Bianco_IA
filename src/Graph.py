@@ -158,8 +158,7 @@ class Graph:
             if edge not in self.edges:
                 self.edges.append((node1.get_label(), node2.get_label()))
 
-    def generate_edges(self, central_node,
-                       visited_nodes=None):  # FIXME: non devi usare visited nodes perchè ti fermi prima di aver finito tutte le connessioni!
+    def generate_edges(self, central_node):  # FIXME: non devi usare visited nodes perchè ti fermi prima di aver finito tutte le connessioni!
         """
         Generates the edges of the given graph starting from central_node and finding the nearest node to it. Then
         recursively applies the function to the new central_node until there are no more connections left in the graph
@@ -169,8 +168,6 @@ class Graph:
         :return: a list of edges
 
         """
-        if visited_nodes is None:
-            visited_nodes = []
 
         # inserisco nearest_node in visited_nodes (verifico se c'è già)
         # creo arco tra central_node e nearest_node (devo verificare che non si intreccino o è scontato?)
@@ -195,7 +192,7 @@ class Graph:
 
             self.build_edge(central_node, nearest_node)
             get_status(central_node, nearest_node, distances)
-            return self.generate_edges(nearest_node, visited_nodes)
+            return self.generate_edges(nearest_node)
 
         else:
             return
