@@ -25,6 +25,22 @@ def create_random_nodes(n_nodes):
     return nodes
 
 
+def get_status(current_node, nearest_node, distances):
+    """
+    Print all the data step-by-step
+
+    :param current_node: (Node)
+    :param nearest_node: (Node)
+    :param distances: (dict of distances between current_node and all the nodes)
+
+    """
+
+    print("\nCurrent node: ", current_node.get_label())
+    print("Distances: ", distances)
+    print("Nearest node: ", nearest_node.get_label())
+    print("Edge between: ", current_node.get_label(), "-", nearest_node.get_label())
+
+
 class Node:
     def __init__(self, label, x, y):
         self._x = x
@@ -39,22 +55,6 @@ class Node:
 
     def get_label(self):
         return self._label
-
-
-def get_status(current_node, nearest_node, distances):
-    """
-    Print all the data step-by-step
-
-    :param current_node: (Node)
-    :param nearest_node: (Node)
-    :param distances: (dict of distances between current_node and all the nodes)
-
-    """
-
-    print("\nCurrent node: ", current_node.get_label())
-    print("Distances: ", distances)
-    print("Nearest node: ", nearest_node.get_label())
-    print("Edge between: ", current_node.get_label(), nearest_node.get_label())
 
 
 class Graph:
@@ -125,7 +125,10 @@ class Graph:
                     _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
                                                                   (_node.get_x(), _node.get_y()))
 
-        min_label = min(_node_distance, key=_node_distance.get)
+        if len(_node_distance) != 0:    # if there are no edges left return None --> ends generate_edges recursion
+            min_label = min(_node_distance, key=_node_distance.get)
+        else:
+            return None, None
 
         return self._nodes[int(min_label)], _node_distance
 
@@ -155,7 +158,8 @@ class Graph:
             if edge not in self.edges:
                 self.edges.append((node1.get_label(), node2.get_label()))
 
-    def generate_edges(self, central_node, visited_nodes=None):
+    def generate_edges(self, central_node,
+                       visited_nodes=None):  # FIXME: non devi usare visited nodes perchè ti fermi prima di aver finito tutte le connessioni!
         """
         Generates the edges of the given graph starting from central_node and finding the nearest node to it. Then
         recursively applies the function to the new central_node until there are no more connections left in the graph
@@ -174,16 +178,27 @@ class Graph:
 
         # TODO: CONTROLLA INCROCI!
 
-        while len(visited_nodes) < self.n_nodes:
-            visited_nodes.append(central_node)
+        # while len(visited_nodes) < self.n_nodes:        # FIXME: non è questa la condizione, ma se ci sono archi disponibili!
+        #     visited_nodes.append(central_node)
+        #
+        #     nearest_node, distances = self.find_nearest_node(central_node)
+        #
+        #     self.build_edge(central_node, nearest_node)
+        #
+        #     get_status(central_node, nearest_node, distances)
+        #
+        #     return self.generate_edges(nearest_node, visited_nodes)
 
-            nearest_node, distances = self.find_nearest_node(central_node)
+        nearest_node, distances = self.find_nearest_node(central_node)
+
+        if nearest_node is not None and not self.check_edge(central_node, nearest_node):
 
             self.build_edge(central_node, nearest_node)
-
             get_status(central_node, nearest_node, distances)
-
             return self.generate_edges(nearest_node, visited_nodes)
+
+        else:
+            return
 
     def visualize(self, save=False):
         """

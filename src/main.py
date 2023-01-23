@@ -11,13 +11,9 @@ def main():
     print(graph)
 
     random_node1 = graph.get_random_node()
-
     print("RANDOM: ", random_node1.get_label())
 
     graph.generate_edges(random_node1)
-
-    print(graph.edges)
-
     graph.visualize(SAVE_GRAPH)
 
 
