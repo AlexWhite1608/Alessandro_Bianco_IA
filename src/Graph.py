@@ -2,6 +2,7 @@ import math
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+import matplotlib.animation
 
 
 def create_random_nodes(n_nodes):
@@ -38,6 +39,22 @@ class Node:
 
     def get_label(self):
         return self._label
+
+
+def get_status(current_node, nearest_node, distances):
+    """
+    Print all the data step-by-step
+
+    :param current_node: (Node)
+    :param nearest_node: (Node)
+    :param distances: (dict of distances between current_node and all the nodes)
+
+    """
+
+    print("\nCurrent node: ", current_node.get_label())
+    print("Distances: ", distances)
+    print("Nearest node: ", nearest_node.get_label())
+    print("Edge between: ", current_node.get_label(), nearest_node.get_label())
 
 
 class Graph:
@@ -103,14 +120,14 @@ class Graph:
         """
         _node_distance = {}
         for _node in self._nodes:
-            if input_node != _node:  # SE NON C'è UN ARCO TRA CURRENT E _NODE!
+            if input_node != _node:
                 if not self.check_edge(input_node, _node):
                     _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
                                                                   (_node.get_x(), _node.get_y()))
 
         min_label = min(_node_distance, key=_node_distance.get)
 
-        return self._nodes[int(min_label)]
+        return self._nodes[int(min_label)], _node_distance
 
     def get_dict_coords(self):
         """
@@ -157,15 +174,14 @@ class Graph:
 
         # TODO: CONTROLLA INCROCI!
 
-        i = len(visited_nodes)
         while len(visited_nodes) < self.n_nodes:
             visited_nodes.append(central_node)
 
-            nearest_node = self.find_nearest_node(central_node)
+            nearest_node, distances = self.find_nearest_node(central_node)
 
             self.build_edge(central_node, nearest_node)
 
-            print("ARCO TRA: ", central_node.get_label(), nearest_node.get_label())
+            get_status(central_node, nearest_node, distances)
 
             return self.generate_edges(nearest_node, visited_nodes)
 
@@ -179,7 +195,15 @@ class Graph:
             plt.savefig("graph.png")
 
         options = {"node_size": 500, "font_size": 13, "node_color": 'green'}
+
         nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True, **options)
+
+        # nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
+        # nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='green')
+        # nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=13)
+
+        # fig, ax = plt.subplots()
+        # ani = matplotlib.animation.FuncAnimation(fig, self.update_graph(), frames=self.n_nodes, interval=1000, repeat=True)
 
         plt.show()
 
