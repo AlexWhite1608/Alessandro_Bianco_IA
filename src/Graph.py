@@ -4,6 +4,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.animation
 
+# Const values
+PAUSE = 1.5
 
 def create_random_nodes(n_nodes):
     """
@@ -59,7 +61,7 @@ class Node:
 
 class Graph:
 
-    def __init__(self, n_nodes):
+    def __init__(self, n_nodes, save=False):
         """
         Builds the graph given n_nodes Nodes. It also sets the coordinates from each node to be used for the
         graph generation
@@ -70,6 +72,7 @@ class Graph:
         self.n_nodes = n_nodes
         self._nodes = create_random_nodes(self.n_nodes)
         self.edges = []
+        self.save = save
 
         self._graph = nx.Graph()
 
@@ -169,22 +172,7 @@ class Graph:
 
         """
 
-        # inserisco nearest_node in visited_nodes (verifico se c'è già)
-        # creo arco tra central_node e nearest_node (devo verificare che non si intreccino o è scontato?)
-        # finisco quando in visited_nodes ci sono tutti i nodi?
-
         # TODO: CONTROLLA INCROCI!
-
-        # while len(visited_nodes) < self.n_nodes:        # FIXME: non è questa la condizione, ma se ci sono archi disponibili!
-        #     visited_nodes.append(central_node)
-        #
-        #     nearest_node, distances = self.find_nearest_node(central_node)
-        #
-        #     self.build_edge(central_node, nearest_node)
-        #
-        #     get_status(central_node, nearest_node, distances)
-        #
-        #     return self.generate_edges(nearest_node, visited_nodes)
 
         nearest_node, distances = self.find_nearest_node(central_node)
 
@@ -192,32 +180,35 @@ class Graph:
 
             self.build_edge(central_node, nearest_node)
             get_status(central_node, nearest_node, distances)
+            self.visualize()
             return self.generate_edges(nearest_node)
 
         else:
             return
 
-    def visualize(self, save=False):
+    def visualize(self):
         """
         Visualization of the given graph
 
-        :param save: (bool) If True -> saves graph in a .png
         """
-        if save:
+        if self.save:
             plt.savefig("graph.png")
 
-        options = {"node_size": 500, "font_size": 13, "node_color": 'green'}
-
-        nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True, **options)
+        # nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True, **options)
 
         # nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
         # nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='green')
         # nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=13)
 
+        plt.clf()
+        nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
+        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='green')
+        nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=13)
+        plt.show()
+        plt.pause(PAUSE)
+
         # fig, ax = plt.subplots()
         # ani = matplotlib.animation.FuncAnimation(fig, self.update_graph(), frames=self.n_nodes, interval=1000, repeat=True)
-
-        plt.show()
 
     def __str__(self):
         res = "--- Nodes ---"
