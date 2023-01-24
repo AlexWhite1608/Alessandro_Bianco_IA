@@ -194,21 +194,12 @@ class Graph:
         if self.save:
             plt.savefig("graph.png")
 
-        # nx.draw(self._graph, nx.get_node_attributes(self._graph, 'pos'), with_labels=True, **options)
-
-        # nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
-        # nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='green')
-        # nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=13)
-
         plt.clf()
         nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
         nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='green')
         nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=13)
         plt.show()
         plt.pause(PAUSE)
-
-        # fig, ax = plt.subplots()
-        # ani = matplotlib.animation.FuncAnimation(fig, self.update_graph(), frames=self.n_nodes, interval=1000, repeat=True)
 
     def __str__(self):
         res = "--- Nodes ---"
