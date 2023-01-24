@@ -161,7 +161,7 @@ class Graph:
             if edge not in self.edges:
                 self.edges.append((node1.get_label(), node2.get_label()))
 
-    def generate_edges(self, central_node):  # FIXME: non devi usare visited nodes perchè ti fermi prima di aver finito tutte le connessioni!
+    def generate_edges(self, central_node):
         """
         Generates the edges of the given graph starting from central_node and finding the nearest node to it. Then
         recursively applies the function to the new central_node until there are no more connections left in the graph
