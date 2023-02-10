@@ -10,7 +10,6 @@ PAUSE = 1.5
 def create_random_nodes(n_nodes):
     """
     Creates n_nodes Node class instances with random x,y coordinates.
-    The label string is generated using a random letter + x, y coordinates of the node
 
     :param: n_nodes (int)
     :return: list of Node
