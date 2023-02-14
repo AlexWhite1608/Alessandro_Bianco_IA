@@ -4,7 +4,7 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.animation
-from shapely import LineString
+from shapely import LineString, MultiLineString, Polygon, MultiPolygon
 
 # Const values
 PAUSE = 1.5
@@ -43,6 +43,12 @@ def get_status(current_node, nearest_node, distances):
     print("Nearest node: ", nearest_node.get_label())
     print("Edge between: ", current_node.get_label(), "-", nearest_node.get_label())
 
+
+def lines_intersect(p, q, r, s):
+    return (ccw(p,r,s) != ccw(q,r,s)) and (ccw(p,q,r) != ccw(p,q,s))
+
+def ccw(p, q, r):
+    return (r[1]-p[1]) * (q[0]-p[0]) > (q[1]-p[1]) * (r[0]-p[0])
 
 class Node:
     def __init__(self, label, x, y):
@@ -162,12 +168,12 @@ class Graph:
             if edge not in self.edges:
                 self.edges.append((node1.get_label(), node2.get_label()))
 
-    def check_edge_intersection(self, node1, node2):
+    def check_edge_intersection(self, nodeA, nodeB):
         """
         Given two nodes it checks if the edge between the two nodes intersect other edges of the graph
 
-        :param node1: (Node)
-        :param node2: (Node)
+        :param nodeA: (Node)
+        :param nodeB: (Node)
         :return: bool
 
         """
@@ -176,21 +182,13 @@ class Graph:
         for node1, node2 in itertools.combinations(self._nodes, 2):
             coords_combinations[(node1.get_label(), node2.get_label())] = ((node1.get_x(), node1.get_y()),
                                                                            (node2.get_x(), node2.get_y()))
+        input_edge = ((nodeA.get_x(), nodeA.get_y()),
+                      (nodeB.get_x(), nodeB.get_y()))
 
-        line_to_check = LineString([(node1.get_x(), node1.get_y()), (node2.get_x(), node2.get_y())])
-        lines = []
-        for edge in coords_combinations.items():
-            line = LineString([(edge[1][0]), (edge[1][1])])
-            lines.append(line)
+        if not any(lines_intersect(input_edge[0], input_edge[1], coords_combinations[edge][0], coords_combinations[edge][1]) for edge in self._graph.edges):
+            return False
 
-        for line in lines:
-            if line.intersection(line_to_check) is not None:
-                return True, line.intersection(line_to_check)
-
-        return False
-
-
-
+        return True
 
     def generate_edges(self, central_node):
         """
@@ -205,13 +203,14 @@ class Graph:
 
         nearest_node, distances = self.find_nearest_node(central_node)
 
-        if nearest_node is not None and not self.check_edge(central_node, nearest_node):
+        # TODO: CONTROLLA INCROCI!
 
-            # TODO: CONTROLLA INCROCI!
-            print(self.check_edge_intersection(central_node, nearest_node))
-            self.build_edge(central_node, nearest_node)
-            get_status(central_node, nearest_node, distances)
-            self.visualize()
+        if nearest_node is not None and not self.check_edge(central_node, nearest_node):
+            if self.check_edge_intersection(central_node, nearest_node) is False:
+                self.build_edge(central_node, nearest_node)
+                get_status(central_node, nearest_node, distances)
+                self.visualize()
+
             return self.generate_edges(nearest_node)
 
         else:
@@ -225,7 +224,11 @@ class Graph:
         if self.save:
             plt.savefig("graph.png")
 
+        fig = plt.figure()
+        plt.figure().clear()
+        plt.close()
         plt.clf()
+
         nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
         nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='green')
         nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=13)
