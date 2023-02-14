@@ -1,8 +1,10 @@
+import itertools
 import math
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.animation
+from shapely import LineString
 
 # Const values
 PAUSE = 1.5
@@ -160,6 +162,36 @@ class Graph:
             if edge not in self.edges:
                 self.edges.append((node1.get_label(), node2.get_label()))
 
+    def check_edge_intersection(self, node1, node2):
+        """
+        Given two nodes it checks if the edge between the two nodes intersect other edges of the graph
+
+        :param node1: (Node)
+        :param node2: (Node)
+        :return: bool
+
+        """
+        # Costruisco tutte le possibili combinazioni degli archi del grafo
+        coords_combinations = {}
+        for node1, node2 in itertools.combinations(self._nodes, 2):
+            coords_combinations[(node1.get_label(), node2.get_label())] = ((node1.get_x(), node1.get_y()),
+                                                                           (node2.get_x(), node2.get_y()))
+
+        line_to_check = LineString([(node1.get_x(), node1.get_y()), (node2.get_x(), node2.get_y())])
+        lines = []
+        for edge in coords_combinations.items():
+            line = LineString([(edge[1][0]), (edge[1][1])])
+            lines.append(line)
+
+        for line in lines:
+            if line.intersection(line_to_check) is not None:
+                return True, line.intersection(line_to_check)
+
+        return False
+
+
+
+
     def generate_edges(self, central_node):
         """
         Generates the edges of the given graph starting from central_node and finding the nearest node to it. Then
@@ -171,12 +203,12 @@ class Graph:
 
         """
 
-        # TODO: CONTROLLA INCROCI!
-
         nearest_node, distances = self.find_nearest_node(central_node)
 
         if nearest_node is not None and not self.check_edge(central_node, nearest_node):
 
+            # TODO: CONTROLLA INCROCI!
+            print(self.check_edge_intersection(central_node, nearest_node))
             self.build_edge(central_node, nearest_node)
             get_status(central_node, nearest_node, distances)
             self.visualize()
