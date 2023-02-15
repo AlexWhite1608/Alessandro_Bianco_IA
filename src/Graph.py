@@ -1,5 +1,6 @@
 import itertools
 import math
+import operator
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -7,7 +8,8 @@ import matplotlib.animation
 from shapely import LineString, MultiLineString, Polygon, MultiPolygon
 
 # Const values
-PAUSE = 1.5
+PAUSE = 1.8
+
 
 def create_random_nodes(n_nodes):
     """
@@ -45,10 +47,12 @@ def get_status(current_node, nearest_node, distances):
 
 
 def lines_intersect(p, q, r, s):
-    return (ccw(p,r,s) != ccw(q,r,s)) and (ccw(p,q,r) != ccw(p,q,s))
+    return (ccw(p, r, s) != ccw(q, r, s)) and (ccw(p, q, r) != ccw(p, q, s))
+
 
 def ccw(p, q, r):
-    return (r[1]-p[1]) * (q[0]-p[0]) > (q[1]-p[1]) * (r[0]-p[0])
+    return (r[1] - p[1]) * (q[0] - p[0]) > (q[1] - p[1]) * (r[0] - p[0])
+
 
 class Node:
     def __init__(self, label, x, y):
@@ -131,14 +135,27 @@ class Graph:
         _node_distance = {}
         for _node in self._nodes:
             if input_node != _node:
-                if not self.check_edge(input_node, _node):
+                if not self.check_edge(input_node, _node):  # if there is already an edge skip
                     _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
                                                                   (_node.get_x(), _node.get_y()))
 
-        if len(_node_distance) != 0:    # if there are no edges left return None --> ends generate_edges recursion
+        if len(_node_distance) != 0:  # if there are no edges left return None --> ends generate_edges recursion
             min_label = min(_node_distance, key=_node_distance.get)
         else:
             return None, None
+
+        # TODO: tramite il dizionario _node_distance considerare prima il nodo più vicino, se c'è intersezione allora passa a quello dopo!
+        # if len(_node_distance) != 0:    # if there are no edges left return None --> ends generate_edges recursion
+        #     # min_label = min(_node_distance, key=_node_distance.get)
+        #     min_labels = sorted(_node_distance.items(), key=itemgetter(1))[:2]
+        # else:
+        #     return None, None
+        #
+        # # TODO: tramite il dizionario _node_distance considerare prima il nodo più vicino, se c'è intersezione allora passa a quello dopo!
+        # if self.check_edge_intersection(input_node, self._nodes[int(min_labels[0][0])]) is False:
+        #     return self._nodes[int(min_labels[0][0])], _node_distance
+        # else:
+        #     return self._nodes[int(min_labels[1][0])], _node_distance
 
         return self._nodes[int(min_label)], _node_distance
 
@@ -185,19 +202,19 @@ class Graph:
         input_edge = ((nodeA.get_x(), nodeA.get_y()),
                       (nodeB.get_x(), nodeB.get_y()))
 
-        if not any(lines_intersect(input_edge[0], input_edge[1], coords_combinations[edge][0], coords_combinations[edge][1]) for edge in self._graph.edges):
-            return False
+        for edge in self._graph.edges:
+            if lines_intersect(input_edge[0], input_edge[1], coords_combinations[edge][0],
+                               coords_combinations[edge][1]):
+                print("{} e {} intersecano {} e {}".format(nodeA.get_label(), nodeB.get_label(),
+                                                           coords_combinations[edge][0], coords_combinations[edge][1]))
+                return True
 
-        return True
+        return False
 
     def generate_edges(self, central_node):
         """
         Generates the edges of the given graph starting from central_node and finding the nearest node to it. Then
         recursively applies the function to the new central_node until there are no more connections left in the graph
-
-        :param: central_node (Node)
-        :param: visited_nodes (list of Nodes)
-        :return: a list of edges
 
         """
 
@@ -206,15 +223,23 @@ class Graph:
         # TODO: CONTROLLA INCROCI!
 
         if nearest_node is not None and not self.check_edge(central_node, nearest_node):
-            if self.check_edge_intersection(central_node, nearest_node) is False:
-                self.build_edge(central_node, nearest_node)
-                get_status(central_node, nearest_node, distances)
-                self.visualize()
+            # if self.check_edge_intersection(central_node, nearest_node) is False:
+            self.find_nearest_node(central_node)
+            self.build_edge(central_node, nearest_node)
+            get_status(central_node, nearest_node, distances)
+            self.visualize()
 
             return self.generate_edges(nearest_node)
 
         else:
             return
+
+        # nearest_node = self.new_edge_generation(central_node)
+        #
+        # return self.new_edge_generation(nearest_node)
+
+
+
 
     def visualize(self):
         """
