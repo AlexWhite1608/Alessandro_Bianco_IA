@@ -84,6 +84,7 @@ class Graph:
         self._nodes = create_random_nodes(self.n_nodes)
         self.edges = []
         self.save = save
+        self._points = self.get_dict_coords()
 
         self._graph = nx.Graph()
 
@@ -220,26 +221,33 @@ class Graph:
 
         nearest_node, distances = self.find_nearest_node(central_node)
 
-        # TODO: CONTROLLA INCROCI!
-
-        if nearest_node is not None and not self.check_edge(central_node, nearest_node):
-            # if self.check_edge_intersection(central_node, nearest_node) is False:
-            self.find_nearest_node(central_node)
+        if len(self.edges) == 0:
             self.build_edge(central_node, nearest_node)
             get_status(central_node, nearest_node, distances)
             self.visualize()
 
             return self.generate_edges(nearest_node)
 
-        else:
-            return
+        for u, v in self.edges:
+            if not lines_intersect(self._points[central_node.get_label()], self._points[nearest_node.get_label()],
+                                   self._points[u], self._points[v]):
+
+                if nearest_node is not None and not self.check_edge(central_node, nearest_node):
+                    self.find_nearest_node(central_node)
+                    self.build_edge(central_node, nearest_node)
+                    get_status(central_node, nearest_node, distances)
+                    self.visualize()
+
+                    return self.generate_edges(nearest_node)
+
+                else:
+                    return
+            else:
+                continue
 
         # nearest_node = self.new_edge_generation(central_node)
         #
         # return self.new_edge_generation(nearest_node)
-
-
-
 
     def visualize(self):
         """
