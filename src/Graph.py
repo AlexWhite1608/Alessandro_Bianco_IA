@@ -54,6 +54,23 @@ def ccw(p, q, r):
     return (r[1] - p[1]) * (q[0] - p[0]) > (q[1] - p[1]) * (r[0] - p[0])
 
 
+def get_line_intersection(p0, p1, p2, p3):
+
+    s1_x = p1[0] - p0[0]
+    s2_x = p3[0] - p2[0]
+
+    s1_y = p1[1] - p0[1]
+    s2_y = p3[1] - p2[1]
+
+    s = (-s1_y * (p0[0] - p2[0]) + s1_x * (p0[1] - p2[1])) / (-s2_x * s1_y + s1_x * s2_y)
+    t = (s2_x * (p0[1] - p2[1]) - s2_y * (p0[0] - p2[0])) / (-s2_x * s1_y + s1_x * s2_y)
+
+    if 0 <= s <= 1 and 0 <= t <= 1:
+        print("Collisione!")
+        return True
+    else:
+        return False
+
 class Node:
     def __init__(self, label, x, y):
         self._x = x
@@ -230,7 +247,7 @@ class Graph:
 
         for u, v in self.edges:
             if nearest_node is not None:
-                if not lines_intersect(self._points[central_node.get_label()], self._points[nearest_node.get_label()],
+                if not get_line_intersection(self._points[central_node.get_label()], self._points[nearest_node.get_label()],
                                        self._points[u], self._points[v]):
 
                     if not self.check_edge(central_node, nearest_node):
