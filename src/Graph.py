@@ -66,7 +66,7 @@ def get_line_intersection(p0, p1, p2, p3):
     t = (s2_x * (p0[1] - p2[1]) - s2_y * (p0[0] - p2[0])) / (-s2_x * s1_y + s1_x * s2_y)
 
     if 0 <= s <= 1 and 0 <= t <= 1:
-        print("Collisione!")
+        print(f"Collisione tra {p0} - {p1} e {p2} - {p3}")
         return True
     else:
         return False
@@ -238,7 +238,7 @@ class Graph:
 
         nearest_node, distances = self.find_nearest_node(central_node)
 
-        if len(self.edges) == 0:
+        if len(self.edges) < 2:
             self.build_edge(central_node, nearest_node)
             get_status(central_node, nearest_node, distances)
             self.visualize()
@@ -247,8 +247,8 @@ class Graph:
 
         for u, v in self.edges:
             if nearest_node is not None:
-                if not get_line_intersection(self._points[central_node.get_label()], self._points[nearest_node.get_label()],
-                                       self._points[u], self._points[v]):
+                if not get_line_intersection(self._points[nearest_node.get_label()], self._points[central_node.get_label()],
+                                       self._points[u], self._points[v]):   # FIXME: detecta intersezione tra le linee non tra i segmenti!
 
                     if not self.check_edge(central_node, nearest_node):
                         self.find_nearest_node(central_node)
