@@ -229,21 +229,23 @@ class Graph:
             return self.generate_edges(nearest_node)
 
         for u, v in self.edges:
-            if not lines_intersect(self._points[central_node.get_label()], self._points[nearest_node.get_label()],
-                                   self._points[u], self._points[v]):
+            if nearest_node is not None:
+                if not lines_intersect(self._points[central_node.get_label()], self._points[nearest_node.get_label()],
+                                       self._points[u], self._points[v]):
 
-                if nearest_node is not None and not self.check_edge(central_node, nearest_node):
-                    self.find_nearest_node(central_node)
-                    self.build_edge(central_node, nearest_node)
-                    get_status(central_node, nearest_node, distances)
-                    self.visualize()
+                    if not self.check_edge(central_node, nearest_node):
+                        self.find_nearest_node(central_node)
+                        self.build_edge(central_node, nearest_node)
+                        get_status(central_node, nearest_node, distances)
+                        self.visualize()
 
-                    return self.generate_edges(nearest_node)
+                        return self.generate_edges(nearest_node)
 
-                else:
-                    return
+                    else:
+                        continue
+
             else:
-                continue
+                return
 
         # nearest_node = self.new_edge_generation(central_node)
         #
