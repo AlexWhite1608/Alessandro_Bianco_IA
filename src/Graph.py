@@ -8,10 +8,11 @@ import matplotlib.animation
 from shapely import LineString, MultiLineString, Polygon, MultiPolygon
 
 # Const values
-PAUSE = 1.8
+PAUSE = 1.5
 
 # A small value used to handle floating-point arithmetic errors
 EPSILON = 1e-9
+
 
 def create_random_nodes(n_nodes):
     """
@@ -57,7 +58,6 @@ def ccw(p, q, r):
 
 
 def get_line_intersection(p0, p1, p2, p3):
-
     s1_x = p1[0] - p0[0]
     s2_x = p3[0] - p2[0]
 
@@ -82,11 +82,14 @@ def get_bounding_box(segment):
         (max(x1, x2), max(y1, y2))
     ]
 
+
 def do_bounding_boxes_intersect(a1, a2, b1, b2):
     box1 = get_bounding_box((a1, a2))
     box2 = get_bounding_box((b1, b2))
 
-    return box1[0][0] <= box2[1][0] and box1[1][0] >= box2[0][0] and box1[0][1] <= box2[1][1] and box1[1][1] >= box2[0][1]
+    return box1[0][0] <= box2[1][0] and box1[1][0] >= box2[0][0] and box1[0][1] <= box2[1][1] and box1[1][1] >= box2[0][
+        1]
+
 
 def is_point_on_line(p1, p2, p=None):
     dx = p2[0] - p1[0]
@@ -97,27 +100,30 @@ def is_point_on_line(p1, p2, p=None):
     r = cross_product(p2_tmp, p_tmp)
     return abs(r) < EPSILON
 
+
 def is_point_right_of_line(p1, p2, p=None):
     a_tmp = (0, 0)
     b_tmp = (p2[0] - p1[0], p2[1] - p1[1])
     c_tmp = (p[0] - p1[0], p[1] - p1[1])
     return cross_product(b_tmp, c_tmp) < 0
 
+
 def line_segment_crosses_line(a, b):
     return is_point_right_of_line(a[0], a[1], b[0]) != is_point_right_of_line(a[0], a[1], b[1])
+
 
 def do_lines_intersect(a1, a2, b1, b2):
     line_segment_a = (a1, a2)
     line_segment_b = (b1, b2)
 
     if do_bounding_boxes_intersect(a1, a2, b1, b2) \
-           and line_segment_crosses_line(line_segment_a, line_segment_b) \
-           and line_segment_crosses_line(line_segment_b, line_segment_a):
-
+            and line_segment_crosses_line(line_segment_a, line_segment_b) \
+            and line_segment_crosses_line(line_segment_b, line_segment_a):
         print(f"Intersezione tra {a1} - {a2} e {b1} - {b2}")
         return True
 
     return False
+
 
 def cross_product(u, v):
     return u[0] * v[1] - u[1] * v[0]
@@ -297,15 +303,30 @@ class Graph:
 
             return self.generate_edges(nearest_node)
 
-        for u, v in self.edges:
-            if nearest_node is not None:
-                if not do_lines_intersect(self._points[nearest_node.get_label()], self._points[central_node.get_label()],
-                                       self._points[u], self._points[v]):   # FIXME: detecta intersezione tra le linee non tra i segmenti!
+        if nearest_node is not None:
 
-                    if not self.check_edge(central_node, nearest_node):
+            for u, v in self.edges:
+
+                if not self.check_edge(central_node, nearest_node):
+                    if not do_lines_intersect(self._points[nearest_node.get_label()],
+                                              self._points[central_node.get_label()],
+                                              self._points[u], self._points[
+                                                  v]):  # FIXME: non cicla su tutti gli edge!
+
                         self.find_nearest_node(central_node)
                         self.build_edge(central_node, nearest_node)
                         get_status(central_node, nearest_node, distances)
+
+                        print("\nPunti nel loop:", self._points)
+
+                        print(f"Coordinate nearest_node ({nearest_node.get_label()}): ",
+                              self._points[nearest_node.get_label()])
+                        print(f"Coordinate central_node ({central_node.get_label()}): ",
+                              self._points[central_node.get_label()])
+                        print(f"Coordinate primo estremo arco di controllo ({u}): ", self._points[u])
+                        print(f"Coordinate secondo estremo arco di controllo ({v}): ", self._points[v])
+                        print("----------")
+
                         self.visualize()
 
                         return self.generate_edges(nearest_node)
@@ -313,8 +334,11 @@ class Graph:
                     else:
                         continue
 
-            else:
-                return
+                else:
+                    continue
+
+        else:
+            return
 
         # nearest_node = self.new_edge_generation(central_node)
         #
