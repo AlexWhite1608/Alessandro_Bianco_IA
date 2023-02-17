@@ -116,6 +116,10 @@ def do_lines_intersect(a1, a2, b1, b2):
     line_segment_a = (a1, a2)
     line_segment_b = (b1, b2)
 
+    # Nel caso in cui un estremo sia uguale per due segmenti allora ci va bene!
+    if (a2 == b1) or (a1 == b2):
+        return False
+
     if do_bounding_boxes_intersect(a1, a2, b1, b2) \
             and line_segment_crosses_line(line_segment_a, line_segment_b) \
             and line_segment_crosses_line(line_segment_b, line_segment_a):
@@ -305,39 +309,38 @@ class Graph:
 
         if nearest_node is not None:
 
-            for u, v in self.edges:
+            if not self.check_edge(central_node, nearest_node):
+                if not any(do_lines_intersect(self._points[nearest_node.get_label()],
+                                              self._points[central_node.get_label()], self._points[u], self._points[v])
+                           for u, v in self.edges):  # FIXME: non cicla su tutti gli edge!
 
-                if not self.check_edge(central_node, nearest_node):
-                    if not do_lines_intersect(self._points[nearest_node.get_label()],
-                                              self._points[central_node.get_label()],
-                                              self._points[u], self._points[
-                                                  v]):  # FIXME: non cicla su tutti gli edge!
+                    self.find_nearest_node(central_node)
+                    self.build_edge(central_node, nearest_node)
+                    get_status(central_node, nearest_node, distances)
 
-                        self.find_nearest_node(central_node)
-                        self.build_edge(central_node, nearest_node)
-                        get_status(central_node, nearest_node, distances)
+                    print("\nPunti nel loop:", self._points)
 
-                        print("\nPunti nel loop:", self._points)
+                    print(f"Coordinate nearest_node ({nearest_node.get_label()}): ",
+                          self._points[nearest_node.get_label()])
+                    print(f"Coordinate central_node ({central_node.get_label()}): ",
+                          self._points[central_node.get_label()])
+                    # print(f"Coordinate primo estremo arco di controllo ({u}): ", self._points[u])
+                    # print(f"Coordinate secondo estremo arco di controllo ({v}): ", self._points[v])
+                    print("----------")
 
-                        print(f"Coordinate nearest_node ({nearest_node.get_label()}): ",
-                              self._points[nearest_node.get_label()])
-                        print(f"Coordinate central_node ({central_node.get_label()}): ",
-                              self._points[central_node.get_label()])
-                        print(f"Coordinate primo estremo arco di controllo ({u}): ", self._points[u])
-                        print(f"Coordinate secondo estremo arco di controllo ({v}): ", self._points[v])
-                        print("----------")
+                    self.visualize()
 
-                        self.visualize()
-
-                        return self.generate_edges(nearest_node)
-
-                    else:
-                        continue
+                    return self.generate_edges(nearest_node)
 
                 else:
-                    continue
+                    return
+
+            else:
+                print("Devo scegliere un nuovo nodo che non sia quello che ho appena considerato!")
+                return
 
         else:
+            print("Devo scegliere un nuovo nodo che non sia quello che ho appena considerato!")
             return
 
         # nearest_node = self.new_edge_generation(central_node)
