@@ -10,6 +10,8 @@ from shapely import LineString, MultiLineString, Polygon, MultiPolygon
 # Const values
 PAUSE = 1.8
 
+# A small value used to handle floating-point arithmetic errors
+EPSILON = 1e-9
 
 def create_random_nodes(n_nodes):
     """
@@ -70,6 +72,56 @@ def get_line_intersection(p0, p1, p2, p3):
         return True
     else:
         return False
+
+
+def get_bounding_box(segment):
+    x1, y1 = segment[0]
+    x2, y2 = segment[1]
+    return [
+        (min(x1, x2), min(y1, y2)),
+        (max(x1, x2), max(y1, y2))
+    ]
+
+def do_bounding_boxes_intersect(a1, a2, b1, b2):
+    box1 = get_bounding_box((a1, a2))
+    box2 = get_bounding_box((b1, b2))
+
+    return box1[0][0] <= box2[1][0] and box1[1][0] >= box2[0][0] and box1[0][1] <= box2[1][1] and box1[1][1] >= box2[0][1]
+
+def is_point_on_line(p1, p2, p=None):
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+    p1_tmp = (0, 0)
+    p2_tmp = (dx, dy)
+    p_tmp = (p[0] - p1[0], p[1] - p1[1])
+    r = cross_product(p2_tmp, p_tmp)
+    return abs(r) < EPSILON
+
+def is_point_right_of_line(p1, p2, p=None):
+    a_tmp = (0, 0)
+    b_tmp = (p2[0] - p1[0], p2[1] - p1[1])
+    c_tmp = (p[0] - p1[0], p[1] - p1[1])
+    return cross_product(b_tmp, c_tmp) < 0
+
+def line_segment_crosses_line(a, b):
+    return is_point_right_of_line(a[0], a[1], b[0]) != is_point_right_of_line(a[0], a[1], b[1])
+
+def do_lines_intersect(a1, a2, b1, b2):
+    line_segment_a = (a1, a2)
+    line_segment_b = (b1, b2)
+
+    if do_bounding_boxes_intersect(a1, a2, b1, b2) \
+           and line_segment_crosses_line(line_segment_a, line_segment_b) \
+           and line_segment_crosses_line(line_segment_b, line_segment_a):
+
+        print(f"Intersezione tra {a1} - {a2} e {b1} - {b2}")
+        return True
+
+    return False
+
+def cross_product(u, v):
+    return u[0] * v[1] - u[1] * v[0]
+
 
 class Node:
     def __init__(self, label, x, y):
@@ -203,31 +255,31 @@ class Graph:
             if edge not in self.edges:
                 self.edges.append((node1.get_label(), node2.get_label()))
 
-    def check_edge_intersection(self, nodeA, nodeB):
-        """
-        Given two nodes it checks if the edge between the two nodes intersect other edges of the graph
-
-        :param nodeA: (Node)
-        :param nodeB: (Node)
-        :return: bool
-
-        """
-        # Costruisco tutte le possibili combinazioni degli archi del grafo
-        coords_combinations = {}
-        for node1, node2 in itertools.combinations(self._nodes, 2):
-            coords_combinations[(node1.get_label(), node2.get_label())] = ((node1.get_x(), node1.get_y()),
-                                                                           (node2.get_x(), node2.get_y()))
-        input_edge = ((nodeA.get_x(), nodeA.get_y()),
-                      (nodeB.get_x(), nodeB.get_y()))
-
-        for edge in self._graph.edges:
-            if lines_intersect(input_edge[0], input_edge[1], coords_combinations[edge][0],
-                               coords_combinations[edge][1]):
-                print("{} e {} intersecano {} e {}".format(nodeA.get_label(), nodeB.get_label(),
-                                                           coords_combinations[edge][0], coords_combinations[edge][1]))
-                return True
-
-        return False
+    # def check_edge_intersection(self, nodeA, nodeB):
+    #     """
+    #     Given two nodes it checks if the edge between the two nodes intersect other edges of the graph
+    #
+    #     :param nodeA: (Node)
+    #     :param nodeB: (Node)
+    #     :return: bool
+    #
+    #     """
+    #     # Costruisco tutte le possibili combinazioni degli archi del grafo
+    #     coords_combinations = {}
+    #     for node1, node2 in itertools.combinations(self._nodes, 2):
+    #         coords_combinations[(node1.get_label(), node2.get_label())] = ((node1.get_x(), node1.get_y()),
+    #                                                                        (node2.get_x(), node2.get_y()))
+    #     input_edge = ((nodeA.get_x(), nodeA.get_y()),
+    #                   (nodeB.get_x(), nodeB.get_y()))
+    #
+    #     for edge in self._graph.edges:
+    #         if lines_intersect(input_edge[0], input_edge[1], coords_combinations[edge][0],
+    #                            coords_combinations[edge][1]):
+    #             print("{} e {} intersecano {} e {}".format(nodeA.get_label(), nodeB.get_label(),
+    #                                                        coords_combinations[edge][0], coords_combinations[edge][1]))
+    #             return True
+    #
+    #     return False
 
     def generate_edges(self, central_node):
         """
@@ -247,7 +299,7 @@ class Graph:
 
         for u, v in self.edges:
             if nearest_node is not None:
-                if not get_line_intersection(self._points[nearest_node.get_label()], self._points[central_node.get_label()],
+                if not do_lines_intersect(self._points[nearest_node.get_label()], self._points[central_node.get_label()],
                                        self._points[u], self._points[v]):   # FIXME: detecta intersezione tra le linee non tra i segmenti!
 
                     if not self.check_edge(central_node, nearest_node):
