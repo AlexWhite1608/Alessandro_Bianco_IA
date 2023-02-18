@@ -224,7 +224,7 @@ class Graph:
 
         sorted_node_distances = sorted(_node_distance, key=_node_distance.get)
 
-        # TODO: ordinare distance_ordered_nodes che contiene Node in ordine secondo sorted_node_distances
+        # a list containing the nearest nodes to input_node sorted by distance
         distance_ordered_nodes = []
         for x in sorted_node_distances:
             for node in self._nodes:
@@ -294,29 +294,31 @@ class Graph:
 
         distance_ordered_nodes = self.find_nearest_node(central_node)
 
-        if len(self.edges) < 2:
+        if distance_ordered_nodes is None:    # No other nodes available
+            return
+
+        if len(self.edges) < 2:     # No need to check for intersections
             self.build_edge(central_node, distance_ordered_nodes[0])
             get_status(central_node, distance_ordered_nodes[0], distance_ordered_nodes)
             self.visualize()
 
             return self.generate_edges(distance_ordered_nodes[0])
 
-        for node, _ in enumerate(distance_ordered_nodes[:-1]):
+        for node, _ in enumerate(distance_ordered_nodes):
             if distance_ordered_nodes[node] is not None:
 
                 if not self.check_edge(central_node, distance_ordered_nodes[node]):
                     if not any(do_lines_intersect(self._points[distance_ordered_nodes[node].get_label()],
-                                                  self._points[central_node.get_label()], self._points[u], self._points[v])
-                               for u, v in self.edges):  # FIXME: non cicla su tutti gli edge!
+                                                  self._points[central_node.get_label()], self._points[u],
+                                                  self._points[v])
+                               for u, v in self.edges):
 
-                        self.find_nearest_node(central_node)
+                        self.find_nearest_node(central_node)    #FIXME: serve??
                         self.build_edge(central_node, distance_ordered_nodes[node])
                         get_status(central_node, distance_ordered_nodes[node], distance_ordered_nodes)
 
-                        print("\nPunti nel loop:", self._points)
-
-                        print(f"Coordinate nearest_node ({distance_ordered_nodes[0].get_label()}): ",
-                              self._points[distance_ordered_nodes[0].get_label()])
+                        print(f"Coordinate nearest_node ({distance_ordered_nodes[node].get_label()}): ",
+                              self._points[distance_ordered_nodes[node].get_label()])
                         print(f"Coordinate central_node ({central_node.get_label()}): ",
                               self._points[central_node.get_label()])
 
@@ -327,9 +329,7 @@ class Graph:
                         return self.generate_edges(distance_ordered_nodes[node])
 
                     else:
-                        # del distance_ordered_nodes[node]    # Elimino il nodo che genera intersezione
-
-                        return self.generate_edges(distance_ordered_nodes[node:node + 1])
+                        continue
 
                 else:
                     continue
