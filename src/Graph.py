@@ -33,22 +33,6 @@ def create_random_nodes(n_nodes):
     return nodes
 
 
-def get_status(current_node, nearest_node, distances):
-    """
-    Print all the data step-by-step
-
-    :param current_node: (Node)
-    :param nearest_node: (Node)
-    :param distances: (dict of distances between current_node and all the nodes)
-
-    """
-
-    print("\nCurrent node: ", current_node.get_label())
-    print("Distances: ", distances)
-    print("Nearest node: ", nearest_node.get_label())
-    print("Edge between: ", current_node.get_label(), "-", nearest_node.get_label())
-
-
 def lines_intersect(p, q, r, s):
     return (ccw(p, r, s) != ccw(q, r, s)) and (ccw(p, q, r) != ccw(p, q, s))
 
@@ -175,6 +159,19 @@ class Graph:
         pos = self.get_dict_coords()
         nx.set_node_attributes(self._graph, pos, 'coord')
 
+    def get_status(self, current_node, nearest_node):
+        """
+        Print all the data step-by-step
+
+        :param current_node: (Node)
+        :param nearest_node: (Node)
+
+        """
+
+        print("\nCurrent node: ", current_node.get_label(), ": ", f"{self._points[current_node.get_label()]}")
+        print("Nearest node: ", nearest_node.get_label(), ": ", f"{self._points[nearest_node.get_label()]}")
+        print("Edge between: ", current_node.get_label(), "-", nearest_node.get_label())
+
     def add_node(self, node):  # TODO: VANNO AGGIUNTI AL GRAFO!
         if node not in self._nodes:
             self._nodes.append(node)
@@ -259,32 +256,6 @@ class Graph:
             if edge not in self.edges:
                 self.edges.append((node1.get_label(), node2.get_label()))
 
-    # def check_edge_intersection(self, nodeA, nodeB):
-    #     """
-    #     Given two nodes it checks if the edge between the two nodes intersect other edges of the graph
-    #
-    #     :param nodeA: (Node)
-    #     :param nodeB: (Node)
-    #     :return: bool
-    #
-    #     """
-    #     # Costruisco tutte le possibili combinazioni degli archi del grafo
-    #     coords_combinations = {}
-    #     for node1, node2 in itertools.combinations(self._nodes, 2):
-    #         coords_combinations[(node1.get_label(), node2.get_label())] = ((node1.get_x(), node1.get_y()),
-    #                                                                        (node2.get_x(), node2.get_y()))
-    #     input_edge = ((nodeA.get_x(), nodeA.get_y()),
-    #                   (nodeB.get_x(), nodeB.get_y()))
-    #
-    #     for edge in self._graph.edges:
-    #         if lines_intersect(input_edge[0], input_edge[1], coords_combinations[edge][0],
-    #                            coords_combinations[edge][1]):
-    #             print("{} e {} intersecano {} e {}".format(nodeA.get_label(), nodeB.get_label(),
-    #                                                        coords_combinations[edge][0], coords_combinations[edge][1]))
-    #             return True
-    #
-    #     return False
-
     def generate_edges(self, central_node):
         """
         Generates the edges of the given graph starting from central_node and finding the nearest node to it. Then
@@ -299,7 +270,7 @@ class Graph:
 
         if len(self.edges) < 2:     # No need to check for intersections
             self.build_edge(central_node, distance_ordered_nodes[0])
-            get_status(central_node, distance_ordered_nodes[0], distance_ordered_nodes)
+            self.get_status(central_node, distance_ordered_nodes[0])
             self.visualize()
 
             return self.generate_edges(distance_ordered_nodes[0])
@@ -313,18 +284,11 @@ class Graph:
                                                   self._points[v])
                                for u, v in self.edges):
 
-                        self.find_nearest_node(central_node)    #FIXME: serve??
+                        # self.find_nearest_node(central_node)    #FIXME: serve??
                         self.build_edge(central_node, distance_ordered_nodes[node])
-                        get_status(central_node, distance_ordered_nodes[node], distance_ordered_nodes)
+                        self.get_status(central_node, distance_ordered_nodes[node])
 
-                        print(f"Coordinate nearest_node ({distance_ordered_nodes[node].get_label()}): ",
-                              self._points[distance_ordered_nodes[node].get_label()])
-                        print(f"Coordinate central_node ({central_node.get_label()}): ",
-                              self._points[central_node.get_label()])
-
-                        print("----------")
-
-                        self.visualize()
+                        self.visualize()    #TODO: sarebbe figo se si potesse vedere che disegna comunque l'edge anche se c'è intersezione (in rosso) e poi lo cancella
 
                         return self.generate_edges(distance_ordered_nodes[node])
 
@@ -336,10 +300,6 @@ class Graph:
 
             else:
                 return
-
-        # nearest_node = self.new_edge_generation(central_node)
-        #
-        # return self.new_edge_generation(nearest_node)
 
     def visualize(self):
         """
@@ -361,7 +321,7 @@ class Graph:
         plt.pause(PAUSE)
 
     def __str__(self):
-        res = "--- Nodes ---"
+        res = "\n--- Nodes ---"
 
         res += "\n"
         for node in self._nodes:
