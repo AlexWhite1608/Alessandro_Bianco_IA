@@ -168,9 +168,9 @@ class Graph:
 
         """
 
-        print("\nCurrent node: ", current_node.get_label(), ": ", f"{self._points[current_node.get_label()]}")
-        print("Nearest node: ", nearest_node.get_label(), ": ", f"{self._points[nearest_node.get_label()]}")
-        print("Edge between: ", current_node.get_label(), "-", nearest_node.get_label())
+        print("\nCurrent node:", current_node.get_label(), f"{self._points[current_node.get_label()]}")
+        print("Nearest node:", nearest_node.get_label(), f"{self._points[nearest_node.get_label()]}")
+        print("Edge between:", current_node.get_label(), "-", nearest_node.get_label())
 
     def add_node(self, node):  # TODO: VANNO AGGIUNTI AL GRAFO!
         if node not in self._nodes:
