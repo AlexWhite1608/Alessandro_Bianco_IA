@@ -219,25 +219,19 @@ class Graph:
                     _node_distance[_node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
                                                                   (_node.get_x(), _node.get_y()))
 
-        if len(_node_distance) != 0:  # if there are no edges left return None --> ends generate_edges recursion
-            min_label = min(_node_distance, key=_node_distance.get)
-        else:
-            return None, None
+        if len(_node_distance) == 0:  # if there are no edges left return None --> ends generate_edges recursion
+            return None
 
-        # TODO: tramite il dizionario _node_distance considerare prima il nodo più vicino, se c'è intersezione allora passa a quello dopo!
-        # if len(_node_distance) != 0:    # if there are no edges left return None --> ends generate_edges recursion
-        #     # min_label = min(_node_distance, key=_node_distance.get)
-        #     min_labels = sorted(_node_distance.items(), key=itemgetter(1))[:2]
-        # else:
-        #     return None, None
-        #
-        # # TODO: tramite il dizionario _node_distance considerare prima il nodo più vicino, se c'è intersezione allora passa a quello dopo!
-        # if self.check_edge_intersection(input_node, self._nodes[int(min_labels[0][0])]) is False:
-        #     return self._nodes[int(min_labels[0][0])], _node_distance
-        # else:
-        #     return self._nodes[int(min_labels[1][0])], _node_distance
+        sorted_node_distances = sorted(_node_distance, key=_node_distance.get)
 
-        return self._nodes[int(min_label)], _node_distance
+        # TODO: ordinare distance_ordered_nodes che contiene Node in ordine secondo sorted_node_distances
+        distance_ordered_nodes = []
+        for x in sorted_node_distances:
+            for node in self._nodes:
+                if x == node.get_label():
+                    distance_ordered_nodes.append(node)
+
+        return distance_ordered_nodes
 
     def get_dict_coords(self):
         """
@@ -298,50 +292,50 @@ class Graph:
 
         """
 
-        nearest_node, distances = self.find_nearest_node(central_node)
+        distance_ordered_nodes = self.find_nearest_node(central_node)
 
         if len(self.edges) < 2:
-            self.build_edge(central_node, nearest_node)
-            get_status(central_node, nearest_node, distances)
+            self.build_edge(central_node, distance_ordered_nodes[0])
+            get_status(central_node, distance_ordered_nodes[0], distance_ordered_nodes)
             self.visualize()
 
-            return self.generate_edges(nearest_node)
+            return self.generate_edges(distance_ordered_nodes[0])
 
-        if nearest_node is not None:
+        for node, _ in enumerate(distance_ordered_nodes[:-1]):
+            if distance_ordered_nodes[node] is not None:
 
-            if not self.check_edge(central_node, nearest_node):
-                if not any(do_lines_intersect(self._points[nearest_node.get_label()],
-                                              self._points[central_node.get_label()], self._points[u], self._points[v])
-                           for u, v in self.edges):  # FIXME: non cicla su tutti gli edge!
+                if not self.check_edge(central_node, distance_ordered_nodes[node]):
+                    if not any(do_lines_intersect(self._points[distance_ordered_nodes[node].get_label()],
+                                                  self._points[central_node.get_label()], self._points[u], self._points[v])
+                               for u, v in self.edges):  # FIXME: non cicla su tutti gli edge!
 
-                    self.find_nearest_node(central_node)
-                    self.build_edge(central_node, nearest_node)
-                    get_status(central_node, nearest_node, distances)
+                        self.find_nearest_node(central_node)
+                        self.build_edge(central_node, distance_ordered_nodes[node])
+                        get_status(central_node, distance_ordered_nodes[node], distance_ordered_nodes)
 
-                    print("\nPunti nel loop:", self._points)
+                        print("\nPunti nel loop:", self._points)
 
-                    print(f"Coordinate nearest_node ({nearest_node.get_label()}): ",
-                          self._points[nearest_node.get_label()])
-                    print(f"Coordinate central_node ({central_node.get_label()}): ",
-                          self._points[central_node.get_label()])
-                    # print(f"Coordinate primo estremo arco di controllo ({u}): ", self._points[u])
-                    # print(f"Coordinate secondo estremo arco di controllo ({v}): ", self._points[v])
-                    print("----------")
+                        print(f"Coordinate nearest_node ({distance_ordered_nodes[0].get_label()}): ",
+                              self._points[distance_ordered_nodes[0].get_label()])
+                        print(f"Coordinate central_node ({central_node.get_label()}): ",
+                              self._points[central_node.get_label()])
 
-                    self.visualize()
+                        print("----------")
 
-                    return self.generate_edges(nearest_node)
+                        self.visualize()
+
+                        return self.generate_edges(distance_ordered_nodes[node])
+
+                    else:
+                        # del distance_ordered_nodes[node]    # Elimino il nodo che genera intersezione
+
+                        return self.generate_edges(distance_ordered_nodes[node:node + 1])
 
                 else:
-                    return
+                    continue
 
             else:
-                print("Devo scegliere un nuovo nodo che non sia quello che ho appena considerato!")
                 return
-
-        else:
-            print("Devo scegliere un nuovo nodo che non sia quello che ho appena considerato!")
-            return
 
         # nearest_node = self.new_edge_generation(central_node)
         #
