@@ -1,11 +1,7 @@
-import itertools
 import math
-import operator
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
-import matplotlib.animation
-from shapely import LineString, MultiLineString, Polygon, MultiPolygon
 
 # Const values
 PAUSE = 0.5
@@ -130,18 +126,8 @@ class Graph:
         print("Nearest node:", nearest_node.get_label(), f"{self._points[nearest_node.get_label()]}")
         print("Edge between:", current_node.get_label(), "-", nearest_node.get_label())
 
-    def add_node(self, node):  # TODO: VANNO AGGIUNTI AL GRAFO!
-        if node not in self._nodes:
-            self._nodes.append(node)
-
-    def remove_node(self, node):  # TODO: VANNO RIMOSSI DAL GRAFO!
-        if node in self._nodes:
-            self._nodes.remove(node)
-
     def get_random_node(self):
-        node = random.choice(self._nodes)
-
-        return node
+        return random.choice(self._nodes)
 
     def check_edge(self, node1, node2):
         """
@@ -231,7 +217,6 @@ class Graph:
         if do_bounding_boxes_intersect(a1, a2, b1, b2) \
                 and line_segment_crosses_line(line_segment_a, line_segment_b) \
                 and line_segment_crosses_line(line_segment_b, line_segment_a):
-
             print(f"Found intersection between: {self.get_node_from_coords(a2)} - {self.get_node_from_coords(a1)} "
                   f"and {self.get_node_from_coords(b2)} - {self.get_node_from_coords(b1)}")
 
@@ -298,8 +283,8 @@ class Graph:
         plt.clf()
 
         nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
-        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='green')
-        nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=13)
+        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='blue', node_size=180)
+        nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=10, font_color="white")
         plt.show()
         plt.pause(PAUSE)
 
