@@ -8,7 +8,7 @@ import matplotlib.animation
 from shapely import LineString, MultiLineString, Polygon, MultiPolygon
 
 # Const values
-PAUSE = 1.5
+PAUSE = 0.5
 
 # A small value used to handle floating-point arithmetic errors
 EPSILON = 1e-9
@@ -31,31 +31,6 @@ def create_random_nodes(n_nodes):
         nodes.append(Node(label, x, y))
 
     return nodes
-
-
-def lines_intersect(p, q, r, s):
-    return (ccw(p, r, s) != ccw(q, r, s)) and (ccw(p, q, r) != ccw(p, q, s))
-
-
-def ccw(p, q, r):
-    return (r[1] - p[1]) * (q[0] - p[0]) > (q[1] - p[1]) * (r[0] - p[0])
-
-
-def get_line_intersection(p0, p1, p2, p3):
-    s1_x = p1[0] - p0[0]
-    s2_x = p3[0] - p2[0]
-
-    s1_y = p1[1] - p0[1]
-    s2_y = p3[1] - p2[1]
-
-    s = (-s1_y * (p0[0] - p2[0]) + s1_x * (p0[1] - p2[1])) / (-s2_x * s1_y + s1_x * s2_y)
-    t = (s2_x * (p0[1] - p2[1]) - s2_y * (p0[0] - p2[0])) / (-s2_x * s1_y + s1_x * s2_y)
-
-    if 0 <= s <= 1 and 0 <= t <= 1:
-        print(f"Collisione tra {p0} - {p1} e {p2} - {p3}")
-        return True
-    else:
-        return False
 
 
 def get_bounding_box(segment):
@@ -94,23 +69,6 @@ def is_point_right_of_line(p1, p2, p=None):
 
 def line_segment_crosses_line(a, b):
     return is_point_right_of_line(a[0], a[1], b[0]) != is_point_right_of_line(a[0], a[1], b[1])
-
-
-def do_lines_intersect(a1, a2, b1, b2):
-    line_segment_a = (a1, a2)
-    line_segment_b = (b1, b2)
-
-    # Nel caso in cui un estremo sia uguale per due segmenti allora ci va bene!
-    if (a2 == b1) or (a1 == b2):
-        return False
-
-    if do_bounding_boxes_intersect(a1, a2, b1, b2) \
-            and line_segment_crosses_line(line_segment_a, line_segment_b) \
-            and line_segment_crosses_line(line_segment_b, line_segment_a):
-        print(f"Intersezione tra {a1} - {a2} e {b1} - {b2}")
-        return True
-
-    return False
 
 
 def cross_product(u, v):
@@ -241,6 +199,12 @@ class Graph:
 
         return dict_coords
 
+    def get_node_from_coords(self, coords):
+
+        for node, coordinates in self._points.items():
+            if coords == coordinates:
+                return node
+
     def build_edge(self, node1, node2):
         """
         Builds an edge between node1 and node2 if they are not the same node
@@ -256,6 +220,25 @@ class Graph:
             if edge not in self.edges:
                 self.edges.append((node1.get_label(), node2.get_label()))
 
+    def do_lines_intersect(self, a1, a2, b1, b2):
+        line_segment_a = (a1, a2)
+        line_segment_b = (b1, b2)
+
+        # Nel caso in cui un estremo sia uguale per due segmenti allora ci va bene!
+        if (a2 == b1) or (a1 == b2):
+            return False
+
+        if do_bounding_boxes_intersect(a1, a2, b1, b2) \
+                and line_segment_crosses_line(line_segment_a, line_segment_b) \
+                and line_segment_crosses_line(line_segment_b, line_segment_a):
+
+            print(f"Found intersection between: {self.get_node_from_coords(a2)} - {self.get_node_from_coords(a1)} "
+                  f"and {self.get_node_from_coords(b2)} - {self.get_node_from_coords(b1)}")
+
+            return True
+
+        return False
+
     def generate_edges(self, central_node):
         """
         Generates the edges of the given graph starting from central_node and finding the nearest node to it. Then
@@ -265,10 +248,10 @@ class Graph:
 
         distance_ordered_nodes = self.find_nearest_node(central_node)
 
-        if distance_ordered_nodes is None:    # No other nodes available
+        if distance_ordered_nodes is None:  # No other nodes available
             return
 
-        if len(self.edges) < 2:     # No need to check for intersections
+        if len(self.edges) < 2:  # No need to check for intersections
             self.build_edge(central_node, distance_ordered_nodes[0])
             self.get_status(central_node, distance_ordered_nodes[0])
             self.visualize()
@@ -279,16 +262,16 @@ class Graph:
             if distance_ordered_nodes[node] is not None:
 
                 if not self.check_edge(central_node, distance_ordered_nodes[node]):
-                    if not any(do_lines_intersect(self._points[distance_ordered_nodes[node].get_label()],
-                                                  self._points[central_node.get_label()], self._points[u],
-                                                  self._points[v])
+                    if not any(self.do_lines_intersect(self._points[distance_ordered_nodes[node].get_label()],
+                                                       self._points[central_node.get_label()], self._points[u],
+                                                       self._points[v])
                                for u, v in self.edges):
 
                         # self.find_nearest_node(central_node)    #FIXME: serve??
                         self.build_edge(central_node, distance_ordered_nodes[node])
                         self.get_status(central_node, distance_ordered_nodes[node])
 
-                        self.visualize()    #TODO: sarebbe figo se si potesse vedere che disegna comunque l'edge anche se c'è intersezione (in rosso) e poi lo cancella
+                        self.visualize()  # TODO: sarebbe figo se si potesse vedere che disegna comunque l'edge anche se c'è intersezione (in rosso) e poi lo cancella
 
                         return self.generate_edges(distance_ordered_nodes[node])
 
