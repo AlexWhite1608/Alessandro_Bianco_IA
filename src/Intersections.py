@@ -10,8 +10,8 @@ def get_bounding_box(segment):
     """
     Return the bounding box that surrounds the given segment
 
-    :param segment: A tuple containing the start/end point coordinates of the segment
-    :return: A tuple containing the bounding box
+    :param segment: (tuple) Tuple containing the start/end point coordinates of the segment
+    :return: Tuple containing the bounding box
 
     """
 
@@ -105,8 +105,8 @@ def cross_product(u, v):
 
     Return the cross product between the two points u and v
 
-    :param u: (tuple) coordinates of the first point
-    :param v: (tuple) coordinates of the second point
+    :param u: (tuple) Coordinates of the first point
+    :param v: (tuple) Coordinates of the second point
     :return: The cross product
     """
 
