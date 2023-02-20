@@ -309,6 +309,7 @@ class Graph:
     def visualize(self):
 
         """
+
         Visualization of the graph
 
         """
