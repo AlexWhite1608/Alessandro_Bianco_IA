@@ -2,12 +2,10 @@ import math
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+import Intersections as intx
 
 # Const values
-PAUSE = 0.5
-
-# A small value used to handle floating-point arithmetic errors
-EPSILON = 1e-9
+PAUSE = 1.0
 
 
 def create_random_nodes(n_nodes):
@@ -29,46 +27,6 @@ def create_random_nodes(n_nodes):
     return nodes
 
 
-def get_bounding_box(segment):
-    x1, y1 = segment[0]
-    x2, y2 = segment[1]
-    return [
-        (min(x1, x2), min(y1, y2)),
-        (max(x1, x2), max(y1, y2))
-    ]
-
-
-def do_bounding_boxes_intersect(a1, a2, b1, b2):
-    box1 = get_bounding_box((a1, a2))
-    box2 = get_bounding_box((b1, b2))
-
-    return box1[0][0] <= box2[1][0] and box1[1][0] >= box2[0][0] and box1[0][1] <= box2[1][1] and box1[1][1] >= box2[0][
-        1]
-
-
-def is_point_on_line(p1, p2, p=None):
-    dx = p2[0] - p1[0]
-    dy = p2[1] - p1[1]
-    p1_tmp = (0, 0)
-    p2_tmp = (dx, dy)
-    p_tmp = (p[0] - p1[0], p[1] - p1[1])
-    r = cross_product(p2_tmp, p_tmp)
-    return abs(r) < EPSILON
-
-
-def is_point_right_of_line(p1, p2, p=None):
-    a_tmp = (0, 0)
-    b_tmp = (p2[0] - p1[0], p2[1] - p1[1])
-    c_tmp = (p[0] - p1[0], p[1] - p1[1])
-    return cross_product(b_tmp, c_tmp) < 0
-
-
-def line_segment_crosses_line(a, b):
-    return is_point_right_of_line(a[0], a[1], b[0]) != is_point_right_of_line(a[0], a[1], b[1])
-
-
-def cross_product(u, v):
-    return u[0] * v[1] - u[1] * v[0]
 
 
 class Node:
@@ -214,9 +172,9 @@ class Graph:
         if (a2 == b1) or (a1 == b2):
             return False
 
-        if do_bounding_boxes_intersect(a1, a2, b1, b2) \
-                and line_segment_crosses_line(line_segment_a, line_segment_b) \
-                and line_segment_crosses_line(line_segment_b, line_segment_a):
+        if intx.do_bounding_boxes_intersect(a1, a2, b1, b2) \
+                and intx.line_segment_crosses_line(line_segment_a, line_segment_b) \
+                and intx.line_segment_crosses_line(line_segment_b, line_segment_a):
             print(f"Found intersection between: {self.get_node_from_coords(a2)} - {self.get_node_from_coords(a1)} "
                   f"and {self.get_node_from_coords(b2)} - {self.get_node_from_coords(b1)}")
 
@@ -249,13 +207,13 @@ class Graph:
                 if not self.check_edge(central_node, distance_ordered_nodes[node]):
                     if not any(self.do_lines_intersect(self._points[distance_ordered_nodes[node].get_label()],
                                                        self._points[central_node.get_label()], self._points[u],
-                                                       self._points[v])
-                               for u, v in self.edges):
+                                                       self._points[v]) for u, v in self.edges):
 
                         # self.find_nearest_node(central_node)    #FIXME: serve??
                         self.build_edge(central_node, distance_ordered_nodes[node])
                         self.get_status(central_node, distance_ordered_nodes[node])
 
+                        #TODO: Fai animazione!
                         self.visualize()  # TODO: sarebbe figo se si potesse vedere che disegna comunque l'edge anche se c'è intersezione (in rosso) e poi lo cancella
 
                         return self.generate_edges(distance_ordered_nodes[node])
@@ -271,7 +229,7 @@ class Graph:
 
     def visualize(self):
         """
-        Visualization of the given graph
+        Visualization of the graph
 
         """
         if self.save:
