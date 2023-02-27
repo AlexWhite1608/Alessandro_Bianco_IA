@@ -3,6 +3,7 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 import Intersections as intx
+import Backtracking as BT
 
 # Indicates the pause between each edge generation of the graph
 PAUSE = 1.0
