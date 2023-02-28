@@ -314,11 +314,6 @@ class Graph:
             graph[node] = list(neighbor.keys())
 
         initial_assignment = {}
-        for node in graph:
-            initial_assignment[node] = list(BT.colors)
-
-        print(initial_assignment)
-
 
         BT.backtrack(graph, initial_assignment)
 
