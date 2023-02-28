@@ -307,15 +307,20 @@ class Graph:
             else:
                 return
 
-    def backtracking(self):
+    def backtracking(self, type):
 
         graph = {}
         for node, neighbor in self._graph.adjacency():
             graph[node] = list(neighbor.keys())
 
         initial_assignment = {}
+        for node in graph:
+            initial_assignment[node] = list(BT.colors)
 
-        BT.backtrack(graph, initial_assignment)
+        if type == "ForwardChecking":
+            return BT.backtrack_fc(graph, initial_assignment)
+        elif type == "Mac":
+            return BT.backtrack_mac(graph, initial_assignment)
 
     def visualize(self):
 
