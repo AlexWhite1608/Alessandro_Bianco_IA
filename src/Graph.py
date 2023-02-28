@@ -307,6 +307,21 @@ class Graph:
             else:
                 return
 
+    def backtracking(self):
+
+        graph = {}
+        for node, neighbor in self._graph.adjacency():
+            graph[node] = list(neighbor.keys())
+
+        initial_assignment = {}
+        for node in graph:
+            initial_assignment[node] = list(BT.colors)
+
+        print(initial_assignment)
+
+
+        BT.backtrack(graph, initial_assignment)
+
     def visualize(self):
 
         """
