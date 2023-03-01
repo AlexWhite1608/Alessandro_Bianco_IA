@@ -74,6 +74,9 @@ def check_assignment_complete(graph, assignment):
 def select_unassigned_variable(graph, assignment):
     # TODO: manca euristica per il primo valore!
 
+    # FIXME: risolvere il seguente errore:
+    #  return min(unassigned_var, key=lambda node: len(assignment[node])) ValueError: min() arg is an empty sequence
+
     unassigned_var = [node for node in graph if len(assignment[node]) > 1]
 
     # il nodo con il dominio minore
