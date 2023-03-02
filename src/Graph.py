@@ -318,7 +318,7 @@ class Graph:
             initial_assignment[node] = list(BT.COLORS)
 
         if bt_type == "ForwardChecking":
-            return BT.backtrack_fc(graph, initial_assignment)
+            return BT.backtrack_fc(self._graph, graph, initial_assignment)
         elif bt_type == "Mac":
             return BT.backtrack_mac(graph, initial_assignment)
 

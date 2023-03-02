@@ -2,11 +2,11 @@ COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
 
 
 # CON GRAPH SI INTENDE UN DIZIONARIO CHE HA COME CHIAVE CIASCUN NODO E COME VALORE LA LISTA DEI NODI ADIACENTI AL NODO
-def backtrack_fc(graph, assignment):
+def backtrack_fc(nxGraph, graph, assignment):
     if check_assignment_complete(graph, assignment) is True:
         return assignment
 
-    var = select_unassigned_variable(graph, assignment)
+    var = select_unassigned_variable(nxGraph, graph, assignment)[0]
 
     for value in order_domain_values(graph, var, assignment):
         if check_value_consistent(var, value, graph, assignment):
@@ -14,7 +14,7 @@ def backtrack_fc(graph, assignment):
             inferences = forward_checking(graph, var, assignment)
             if inferences is not None:
                 assignment = inferences
-                result = backtrack_fc(graph, assignment)
+                result = backtrack_fc(nxGraph, graph, assignment)
                 if result is not None:
                     return result
         else:
@@ -71,11 +71,16 @@ def check_assignment_complete(graph, assignment):
     return True
 
 
-def select_unassigned_variable(graph, assignment):
-    # TODO: manca euristica per il primo valore!
+def select_unassigned_variable(nxGraph, graph, assignment):
+    i = 0
+    for node in graph:
+        if len(assignment[node]) == 3:
+            i += 1
 
-    # FIXME: risolvere il seguente errore:
-    #  return min(unassigned_var, key=lambda node: len(assignment[node])) ValueError: min() arg is an empty sequence
+    # nel caso di prima iterazione (tutti i domini hanno lunghezza 3) si considera il nodo col grado maggiore
+    if i == len(graph):
+        unassigned_var = sorted(nxGraph.degree, key=lambda x: x[1], reverse=True)
+        return unassigned_var[0]
 
     unassigned_var = [node for node in graph if len(assignment[node]) > 1]
 
