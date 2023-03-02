@@ -6,19 +6,20 @@ def backtrack_fc(nxGraph, graph, assignment):
     if check_assignment_complete(graph, assignment) is True:
         return assignment
 
-    var = select_unassigned_variable(nxGraph, graph, assignment)[0]
+    var = select_unassigned_variable(nxGraph, graph, assignment)
 
-    for value in order_domain_values(graph, var, assignment):
-        if check_value_consistent(var, value, graph, assignment):
-            assignment[var] = [value]
-            inferences = forward_checking(graph, var, assignment)
-            if inferences is not None:
-                assignment = inferences
-                result = backtrack_fc(nxGraph, graph, assignment)
-                if result is not None:
-                    return result
-        else:
-            assignment[var].remove(value)
+    if var is not None:
+        for value in order_domain_values(graph, var, assignment):
+            if check_value_consistent(var, value, graph, assignment):
+                assignment[var] = [value]
+                inferences = forward_checking(graph, var, assignment)
+                if inferences is not None:
+                    assignment = inferences
+                    result = backtrack_fc(nxGraph, graph, assignment)
+                    if result is not None:
+                        return result
+            else:
+                assignment[var].remove(value)
 
     return None
 
@@ -80,12 +81,17 @@ def select_unassigned_variable(nxGraph, graph, assignment):
     # nel caso di prima iterazione (tutti i domini hanno lunghezza 3) si considera il nodo col grado maggiore
     if i == len(graph):
         unassigned_var = sorted(nxGraph.degree, key=lambda x: x[1], reverse=True)
-        return unassigned_var[0]
+        print("Nodo con grado maggiore: ", unassigned_var[0][0])
+        return unassigned_var[0][0]
 
     unassigned_var = [node for node in graph if len(assignment[node]) > 1]
 
+    # se non ci sono più variabili disponibili con più di un valore nel dominio, la ricerca fallisce
+    if not unassigned_var:
+        return None
+
     # il nodo con il dominio minore
-    return min(unassigned_var, key=lambda node: len(assignment[node]))
+    return min(unassigned_var, key=lambda n: len(assignment[n]))
 
 
 def order_domain_values(graph, var, assignment):
