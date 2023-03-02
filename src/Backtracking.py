@@ -37,8 +37,7 @@ def backtrack_mac(nxGraph, graph, assignment):
             if check_value_consistent(var, value, graph, assignment):
                 assignment[var] = [value]
                 inferences = mac(graph, var, assignment)
-                if inferences is not None:
-                    assignment = inferences
+                if inferences is not False:
                     result = backtrack_mac(nxGraph, graph, assignment)
                     if result is not None:
                         return result
@@ -101,7 +100,6 @@ def select_unassigned_variable(nxGraph, graph, assignment):
     # nel caso di prima iterazione (tutti i domini hanno lunghezza 3) si considera il nodo col grado maggiore
     if i == len(graph):
         unassigned_var = sorted(nxGraph.degree, key=lambda x: x[1], reverse=True)
-        print("Nodo con grado maggiore: ", unassigned_var[0][0])
         return unassigned_var[0][0]
 
     unassigned_var = [node for node in graph if len(assignment[node]) > 1]
