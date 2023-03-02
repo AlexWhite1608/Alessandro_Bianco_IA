@@ -1,3 +1,5 @@
+import queue
+
 COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
 
 
@@ -24,8 +26,26 @@ def backtrack_fc(nxGraph, graph, assignment):
     return None
 
 
-def backtrack_mac(graph, assignment):
-    return
+def backtrack_mac(nxGraph, graph, assignment):
+    if check_assignment_complete(graph, assignment) is True:
+        return assignment
+
+    var = select_unassigned_variable(nxGraph, graph, assignment)
+
+    if var is not None:
+        for value in order_domain_values(graph, var, assignment):
+            if check_value_consistent(var, value, graph, assignment):
+                assignment[var] = [value]
+                inferences = mac(graph, var, assignment)
+                if inferences is not None:
+                    assignment = inferences
+                    result = backtrack_mac(nxGraph, graph, assignment)
+                    if result is not None:
+                        return result
+            else:
+                assignment[var].remove(value)
+
+    return None
 
 
 def check_value_consistent(var, value, graph, assignment):
@@ -129,4 +149,40 @@ def forward_checking(graph, var, assignment):
 
 
 def mac(graph, var, assignment):
-    return
+    q = get_neighbors(graph)
+
+    while len(q) > 0:
+        (x_i, x_j) = q.pop()
+        if revise(x_i, x_j, assignment):
+            if len(assignment[x_i]) == 0:
+                return False
+            for neighbor in graph[x_i]:
+                if neighbor is not x_j:
+                    q.append((neighbor, x_i))
+
+    return True
+
+
+def revise(x_i, x_j, assignment):
+
+    is_revised = False
+    for x in assignment[x_i]:
+        is_consistent = False
+        for y in assignment[x_j]:
+            if x is not y:
+                is_consistent = True
+                break
+        if not is_consistent:
+            assignment[x_i].remove(x)
+            is_revised = True
+
+    return is_revised
+
+
+def get_neighbors(graph):
+    arcs = []
+    for node in graph:
+        for neighbor in graph[node]:
+            arcs.append((node, neighbor))
+
+    return arcs
