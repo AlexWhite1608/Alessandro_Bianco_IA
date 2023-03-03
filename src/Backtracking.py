@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import networkx as nx
+import Graph as G
 
 COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
 
 
 # CON GRAPH SI INTENDE UN DIZIONARIO CHE HA COME CHIAVE CIASCUN NODO E COME VALORE LA LISTA DEI NODI ADIACENTI AL NODO
-def backtrack_fc(nxGraph, graph, assignment, nodes):
+def backtrack_fc(nxGraph, graph, assignment, nodes):  # FIXME: nodes serve solo per colorare?
     if check_assignment_complete(graph, assignment) is True:
         return assignment
 
@@ -18,6 +19,7 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):
                 inferences = forward_checking(graph, var, assignment)
                 if inferences is not None:
                     assignment = inferences
+                    print_node_color(nodes, nxGraph, var, assignment)
                     result = backtrack_fc(nxGraph, graph, assignment, nodes)
                     if result is not None:
                         return result
@@ -163,7 +165,6 @@ def mac(graph, var, assignment):
 
 
 def revise(x_i, x_j, assignment):
-
     is_revised = False
     for x in assignment[x_i]:
         is_consistent = False
@@ -185,3 +186,25 @@ def get_neighbors(graph):
             arcs.append((node, neighbor))
 
     return arcs
+
+
+def print_node_color(nodes, nxGraph, var, assignment):
+    # crea un dizionario che ha come chiave il nome del nodo e come valore il colore
+    colors = {node.get_label(): assignment[node.get_label()][0] for node in nodes}
+
+    # tutte i nodi che non sono il nodo corrente devono essere neri
+    for node in nodes:
+        if node.get_label() != var:
+            colors[node.get_label()] = 'black'
+
+    # assegna l'attributo "colore" a ciascun nodo del grafo
+    nx.set_node_attributes(nxGraph, colors, 'color')
+
+    pos = nx.get_node_attributes(nxGraph, 'pos')
+    colors = nx.get_node_attributes(nxGraph, 'color')
+    node_colors = [colors[node.get_label()] for node in nodes]
+    nx.draw_networkx_nodes(nxGraph, pos=pos, node_color=node_colors, node_size=180)
+    nx.draw_networkx_edges(nxGraph, nx.get_node_attributes(nxGraph, 'pos'))
+    nx.draw_networkx_labels(nxGraph, nx.get_node_attributes(nxGraph, 'pos'), font_size=10, font_color="white")
+    plt.show()
+    plt.pause(G.PAUSE)
