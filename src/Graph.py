@@ -318,7 +318,7 @@ class Graph:
             initial_assignment[node] = list(BT.COLORS)
 
         if bt_type == "ForwardChecking":
-            return BT.backtrack_fc(self._graph, graph, initial_assignment)
+            return BT.backtrack_fc(self._graph, graph, initial_assignment, self._nodes)
         elif bt_type == "Mac":
             return BT.backtrack_mac(self._graph, graph, initial_assignment)
 
@@ -339,7 +339,7 @@ class Graph:
         plt.clf()
 
         nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
-        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='blue', node_size=180)
+        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='black', node_size=180)
         nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=10, font_color="white")
         plt.show()
         plt.pause(PAUSE)

@@ -3,7 +3,7 @@ from Graph import Node as Node
 
 
 # CONST VALUES #
-N_NODES = 10
+N_NODES = 5
 SAVE_GRAPH = False
 
 def main():
@@ -14,6 +14,7 @@ def main():
     print("RANDOM: ", random_node1.get_label())
 
     graph.generate_edges(random_node1)
+    print("FC: ", graph.backtracking("ForwardChecking"))
 
 
 

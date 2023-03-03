@@ -1,8 +1,11 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+
 COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
 
 
 # CON GRAPH SI INTENDE UN DIZIONARIO CHE HA COME CHIAVE CIASCUN NODO E COME VALORE LA LISTA DEI NODI ADIACENTI AL NODO
-def backtrack_fc(nxGraph, graph, assignment):
+def backtrack_fc(nxGraph, graph, assignment, nodes):
     if check_assignment_complete(graph, assignment) is True:
         return assignment
 
@@ -15,7 +18,7 @@ def backtrack_fc(nxGraph, graph, assignment):
                 inferences = forward_checking(graph, var, assignment)
                 if inferences is not None:
                     assignment = inferences
-                    result = backtrack_fc(nxGraph, graph, assignment)
+                    result = backtrack_fc(nxGraph, graph, assignment, nodes)
                     if result is not None:
                         return result
             else:
