@@ -189,13 +189,18 @@ def get_neighbors(graph):
 
 
 def print_node_color(nodes, nxGraph, var, assignment):
-    # crea un dizionario che ha come chiave il nome del nodo e come valore il colore
-    colors = {node.get_label(): assignment[node.get_label()][0] for node in nodes}
-
-    # tutte i nodi che non sono il nodo corrente devono essere neri
+    colors = {}
     for node in nodes:
-        if node.get_label() != var:
+        if len(assignment[node.get_label()]) == 3:
             colors[node.get_label()] = 'black'
+        else:
+            colors[node.get_label()] = assignment[node.get_label()][0]
+
+
+    # # tutte i nodi che non sono il nodo corrente devono essere neri
+    # for node in nodes:
+    #     if node.get_label() != var:
+    #         colors[node.get_label()] = 'black'
 
     # assegna l'attributo "colore" a ciascun nodo del grafo
     nx.set_node_attributes(nxGraph, colors, 'color')
