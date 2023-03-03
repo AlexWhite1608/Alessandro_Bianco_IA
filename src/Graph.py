@@ -320,7 +320,7 @@ class Graph:
         if bt_type == "ForwardChecking":
             return BT.backtrack_fc(self._graph, graph, initial_assignment, self._nodes)
         elif bt_type == "Mac":
-            return BT.backtrack_mac(self._graph, graph, initial_assignment)
+            return BT.backtrack_mac(self._graph, graph, initial_assignment, self._nodes)
 
     def visualize(self):
 

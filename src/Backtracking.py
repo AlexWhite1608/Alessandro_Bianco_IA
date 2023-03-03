@@ -6,7 +6,7 @@ COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
 
 
 # CON GRAPH SI INTENDE UN DIZIONARIO CHE HA COME CHIAVE CIASCUN NODO E COME VALORE LA LISTA DEI NODI ADIACENTI AL NODO
-def backtrack_fc(nxGraph, graph, assignment, nodes):  # FIXME: nodes serve solo per colorare?
+def backtrack_fc(nxGraph, graph, assignment, nodes):
     if check_assignment_complete(graph, assignment) is True:
         return assignment
 
@@ -19,7 +19,7 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):  # FIXME: nodes serve solo 
                 inferences = forward_checking(graph, var, assignment)
                 if inferences is not None:
                     assignment = inferences
-                    print_node_color(nodes, nxGraph, var, assignment)
+                    print_node_color(nodes, nxGraph, assignment)
                     result = backtrack_fc(nxGraph, graph, assignment, nodes)
                     if result is not None:
                         return result
@@ -29,7 +29,7 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):  # FIXME: nodes serve solo 
     return None
 
 
-def backtrack_mac(nxGraph, graph, assignment):
+def backtrack_mac(nxGraph, graph, assignment, nodes):   # FIXME: parte colorando tutti i nodi!
     if check_assignment_complete(graph, assignment) is True:
         return assignment
 
@@ -41,7 +41,8 @@ def backtrack_mac(nxGraph, graph, assignment):
                 assignment[var] = [value]
                 inferences = mac(graph, var, assignment)
                 if inferences is not False:
-                    result = backtrack_mac(nxGraph, graph, assignment)
+                    print_node_color(nodes, nxGraph, assignment)
+                    result = backtrack_mac(nxGraph, graph, assignment, nodes)
                     if result is not None:
                         return result
             else:
@@ -188,19 +189,15 @@ def get_neighbors(graph):
     return arcs
 
 
-def print_node_color(nodes, nxGraph, var, assignment):
+def print_node_color(nodes, nxGraph, assignment):
     colors = {}
+
+    # se siamo nella prima iterazione tutti i nodi sono neri, altrimenti prendono il colore assegnato
     for node in nodes:
         if len(assignment[node.get_label()]) == 3:
             colors[node.get_label()] = 'black'
         else:
             colors[node.get_label()] = assignment[node.get_label()][0]
-
-
-    # # tutte i nodi che non sono il nodo corrente devono essere neri
-    # for node in nodes:
-    #     if node.get_label() != var:
-    #         colors[node.get_label()] = 'black'
 
     # assegna l'attributo "colore" a ciascun nodo del grafo
     nx.set_node_attributes(nxGraph, colors, 'color')
@@ -208,6 +205,7 @@ def print_node_color(nodes, nxGraph, var, assignment):
     pos = nx.get_node_attributes(nxGraph, 'pos')
     colors = nx.get_node_attributes(nxGraph, 'color')
     node_colors = [colors[node.get_label()] for node in nodes]
+
     nx.draw_networkx_nodes(nxGraph, pos=pos, node_color=node_colors, node_size=180)
     nx.draw_networkx_edges(nxGraph, nx.get_node_attributes(nxGraph, 'pos'))
     nx.draw_networkx_labels(nxGraph, nx.get_node_attributes(nxGraph, 'pos'), font_size=10, font_color="white")
