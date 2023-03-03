@@ -1,5 +1,3 @@
-import queue
-
 COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
 
 
