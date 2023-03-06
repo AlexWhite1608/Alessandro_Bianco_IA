@@ -83,12 +83,12 @@ class Graph:
         :param save     (bool) True if saves the graph (.png format), False otherwise
 
         """
+
         self._n_nodes = n_nodes
         self._nodes = create_random_nodes(self._n_nodes)
         self._edges = []
         self._save = save
         self._points = self.get_node_coords()
-
         self._graph = nx.Graph()
 
         for node in self._nodes:
@@ -240,6 +240,7 @@ class Graph:
         :param b1: (tuple) Starting node of the second line coordinates
         :param b2: (tuple) Ending node of the second line coordinates
         :return: True if the two lines intersect, False otherwise
+
         """
 
         line_segment_a = (a1, a2)
@@ -309,10 +310,20 @@ class Graph:
 
     def backtracking(self, bt_type):
 
+        """
+
+        Backtracking algorithm to find the graph-colouring solution in two different ways (FC/MAC)
+
+        :param bt_type: (String) "ForwardChecking" or "Mac"
+
+        """
+
+        # Initialize the graph dict: {node: [neighbors]}
         graph = {}
         for node, neighbor in self._graph.adjacency():
             graph[node] = list(neighbor.keys())
 
+        # The initial assignment consists of all the available colors assigned to all nodes
         initial_assignment = {}
         for node in graph:
             initial_assignment[node] = list(BT.COLORS)
