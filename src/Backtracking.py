@@ -19,7 +19,7 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):
                 inferences = forward_checking(graph, var, assignment)
                 if inferences is not None:
                     assignment = inferences
-                    print_node_color(nodes, nxGraph, assignment)
+                    print_node_color(nodes, nxGraph, assignment, "FC")
                     result = backtrack_fc(nxGraph, graph, assignment, nodes)
                     if result is not None:
                         return result
@@ -41,7 +41,7 @@ def backtrack_mac(nxGraph, graph, assignment, nodes):   # FIXME: parte colorando
                 assignment[var] = [value]
                 inferences = mac(graph, var, assignment)
                 if inferences is not False:
-                    print_node_color(nodes, nxGraph, assignment)
+                    print_node_color(nodes, nxGraph, assignment, "MAC")
                     result = backtrack_mac(nxGraph, graph, assignment, nodes)
                     if result is not None:
                         return result
@@ -189,15 +189,22 @@ def get_neighbors(graph):
     return arcs
 
 
-def print_node_color(nodes, nxGraph, assignment):
+def print_node_color(nodes, nxGraph, assignment, bt_type):
     colors = {}
 
     # se siamo nella prima iterazione tutti i nodi sono neri, altrimenti prendono il colore assegnato
-    for node in nodes:
-        if len(assignment[node.get_label()]) == 3:
-            colors[node.get_label()] = 'black'
-        else:
-            colors[node.get_label()] = assignment[node.get_label()][0]
+    if bt_type == "FC":
+        for node in nodes:
+            if len(assignment[node.get_label()]) == 3:
+                colors[node.get_label()] = 'black'
+            else:
+                colors[node.get_label()] = assignment[node.get_label()][0]
+    elif bt_type == "MAC":
+        for node in nodes:
+            if len(assignment[node.get_label()]) != 1:
+                colors[node.get_label()] = 'black'
+            else:
+                colors[node.get_label()] = assignment[node.get_label()][0]
 
     # assegna l'attributo "colore" a ciascun nodo del grafo
     nx.set_node_attributes(nxGraph, colors, 'color')

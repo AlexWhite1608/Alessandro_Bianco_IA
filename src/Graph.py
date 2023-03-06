@@ -6,7 +6,7 @@ import Intersections as intx
 import Backtracking as BT
 
 # Indicates the pause between each edge generation of the graph
-PAUSE = 1.0
+PAUSE = 0.5
 
 
 def create_random_nodes(n_nodes):
