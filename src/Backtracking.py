@@ -336,7 +336,7 @@ def print_node_color(nodes, nxGraph, assignment, bt_type):
     colors = nx.get_node_attributes(nxGraph, 'color')
     node_colors = [colors[node.get_label()] for node in nodes]
 
-    nx.draw_networkx_nodes(nxGraph, pos=pos, node_color=node_colors, node_size=180)
+    nx.draw_networkx_nodes(nxGraph, pos=pos, node_color=node_colors, node_size=220)
     nx.draw_networkx_edges(nxGraph, nx.get_node_attributes(nxGraph, 'pos'))
     nx.draw_networkx_labels(nxGraph, nx.get_node_attributes(nxGraph, 'pos'), font_size=10, font_color="white")
     plt.show()

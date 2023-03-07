@@ -350,7 +350,7 @@ class Graph:
         plt.clf()
 
         nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
-        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='black', node_size=180)
+        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='black', node_size=220)
         nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=10, font_color="white")
         plt.show()
         plt.pause(PAUSE)
