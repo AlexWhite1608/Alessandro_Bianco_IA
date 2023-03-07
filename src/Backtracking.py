@@ -323,15 +323,18 @@ def print_node_color(nodes, nxGraph, assignment, bt_type):
     """
 
     colors = {}
+    fig, ax = plt.subplots()
 
     # In the first iteration all the nodes are black, otherwise the color is set based on assignment color value
     if bt_type == "FC":
+        ax.set_title("Backtracking with FC")
         for node in nodes:
             if len(assignment[node.get_label()]) == 3:
                 colors[node.get_label()] = 'black'
             else:
                 colors[node.get_label()] = assignment[node.get_label()][0]
     elif bt_type == "MAC":
+        ax.set_title("Backtracking with MAC")
         for node in nodes:
             if len(assignment[node.get_label()]) != 1:
                 colors[node.get_label()] = 'black'
