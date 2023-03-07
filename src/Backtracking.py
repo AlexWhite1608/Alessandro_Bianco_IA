@@ -5,8 +5,20 @@ import Graph as G
 COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
 
 
-# CON GRAPH SI INTENDE UN DIZIONARIO CHE HA COME CHIAVE CIASCUN NODO E COME VALORE LA LISTA DEI NODI ADIACENTI AL NODO
 def backtrack_fc(nxGraph, graph, assignment, nodes):
+
+    """
+
+    Backtrack algorithm using Forward Checking
+
+    :param nxGraph:     (nxGraph)
+    :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :param assignment:  (dict) dictionary corresponding to the initial color assignment for each node {node: [color]}
+    :param nodes:       (list) list of Nodes of the graph
+    :return:            (dict) dictionary corresponding to the final color assignment
+
+    """
+
     if check_assignment_complete(graph, assignment) is True:
         return assignment
 
@@ -29,7 +41,20 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):
     return None
 
 
-def backtrack_mac(nxGraph, graph, assignment, nodes):   # FIXME: parte colorando tutti i nodi!
+def backtrack_mac(nxGraph, graph, assignment, nodes):
+
+    """
+
+    Backtrack algorithm using Maintaining Arc Consistency
+
+    :param nxGraph:     (nxGraph)
+    :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :param assignment:  (dict) dictionary corresponding to the initial color assignment for each node {node: [color]}
+    :param nodes:       (list) list of Nodes of the graph
+    :return:            (dict) dictionary corresponding to the final color assignment
+
+    """
+
     if check_assignment_complete(graph, assignment) is True:
         return assignment
 
@@ -52,25 +77,26 @@ def backtrack_mac(nxGraph, graph, assignment, nodes):   # FIXME: parte colorando
 
 
 def check_value_consistent(var, value, graph, assignment):
-    neighbors_consistent_list = []  # lista che indica per ogni nodo se tutti i nodi vicini sono consistenti
 
-    # Verifica che se ciascun nodo ha il dominio con tutti i colori siamo nella iterazione iniziale e quindi si ha consistenza
+    """
+
+    Checks if the current assignment is consistent (if neighbors nodes don't have the same color assignment)
+
+    :param var:         (Node) current node selected
+    :param value:       (String) current color assigned to the node
+    :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :param assignment:  (dict) dictionary corresponding to the color assignment for each node {node: [color]}
+    :return:            True if assignment consistent, False otherwise
+
+    """
+
+    # If each node has len(colors) color assignments we don't check for consistency because we are in the first iteration
     for colors in assignment.values():
         n_colors = len(colors)
-        if n_colors != len(COLORS):  # se il numero di colori è diverso allora si fanno gli altri controlli
+        if n_colors != len(COLORS):
             break
         else:
             return True
-
-    # for node, neighbors in graph.items():
-    #     n_neighbors = len(neighbors)
-    #     for neighbor in neighbors:
-    #         if neighbor in assignment:
-    #             for color in assignment[neighbor]:
-    #                 if color != value:
-    #                     neighbors_consistent_list.append(True)
-    #         if len(neighbors_consistent_list) == n_neighbors:  # tutti i nodi adiacenti sono consistenti
-    #             return True
 
     for neighbors in graph[var]:
         for neighbor in neighbors:
@@ -81,6 +107,17 @@ def check_value_consistent(var, value, graph, assignment):
 
 
 def check_assignment_complete(graph, assignment):
+
+    """
+
+    Checks if current assignment is complete (all the nodes have the correct color being assigned and there is consistency)
+
+    :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :param assignment:  (dict) dictionary corresponding to the color assignment for each node {node: [color]}
+    :return:            True if assignment is complete, False otherwise
+
+    """
+
     for node in assignment:
         if len(assignment[node]) > 1:
             return False
@@ -96,34 +133,57 @@ def check_assignment_complete(graph, assignment):
 
 
 def select_unassigned_variable(nxGraph, graph, assignment):
-    i = 0
-    for node in graph:
-        if len(assignment[node]) == 3:
-            i += 1
 
-    # nel caso di prima iterazione (tutti i domini hanno lunghezza 3) si considera il nodo col grado maggiore
-    if i == len(graph):
+    """
+
+    Selects the unassigned nodes from the graph following the MRV heuristic
+
+    :param nxGraph:     (nxGraph)
+    :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :param assignment:  (dict) dictionary corresponding to the color assignment for each node {node: [color]}
+    :return:            (Node)
+
+    """
+
+    # Counts the number of nodes that have the length of their domain == 3
+    n_nodes_with_len_3 = sum(1 for node in graph if len(assignment[node]) == 3)
+
+    # In case of first iteration (all the domains have length == 3) we consider the node with higher grade (heuristic)
+    if n_nodes_with_len_3 == len(graph):
         unassigned_var = sorted(nxGraph.degree, key=lambda x: x[1], reverse=True)
         return unassigned_var[0][0]
 
     unassigned_var = [node for node in graph if len(assignment[node]) > 1]
 
-    # se non ci sono più variabili disponibili con più di un valore nel dominio, la ricerca fallisce
+    # If there are no variables left with length(domain) > 1
     if not unassigned_var:
         return None
 
-    # il nodo con il dominio minore
+    # Return the node with the lowest domain size
     return min(unassigned_var, key=lambda n: len(assignment[n]))
 
 
 def order_domain_values(graph, var, assignment):
-    domain = assignment[var]
-    neighbors = graph[var]  # tutti i nodi adiacenti a var
-    n_assigned = {value: 0 for value in
-                  domain}  # inizializza a 0 il contatore di quante volte è stato assegnato quel colore
 
-    # controlla per ogni nodo vicino a var se è stato assegnato un colore. in tal caso
-    # incrementa il numero di assegnamenti di quel colore
+    """
+
+    Orders the domain of each variable following the Least-Constraining-Value heuristic
+
+    :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :param var:         (Node) current node variable selected
+    :param assignment:  (dict) dictionary corresponding to the color assignment for each node {node: [color]}
+    :return:            (dict) a sorted list of colors corresponding to the domain of the current variable
+
+    """
+
+    domain = assignment[var]
+    neighbors = graph[var]
+
+    # Counts the number of occurrences of each color for each node
+    n_assigned = {value: 0 for value in domain}
+
+    # For each neighbor of var it checks if it has already been assigned a color. In that case it increments n_assigned
+    # corresponding to that color
     for neighbor in neighbors:
         if neighbor in assignment:
             colors = assignment[neighbor]
@@ -131,15 +191,27 @@ def order_domain_values(graph, var, assignment):
                 if color in n_assigned:
                     n_assigned[color] += 1
 
-    # ritorna la lista dei colori in ordine crescente
     return sorted(domain, key=lambda value: n_assigned[value])
 
 
 def forward_checking(graph, var, assignment):
-    # Create a copy of the current assignment to modify
+
+    """
+
+    Forward checking inference: removes the conflicting colors from the neighbor's domain of var. Returns a partial
+    assignment of colors.
+
+    :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :param var:         (Node) current node variable selected
+    :param assignment:  (dict) dictionary corresponding to the color assignment for each node {node: [color]}
+    :return:            (dict) a partial assignment of the colors to the nodes
+
+    """
+
+    # Creates a copy of the current assignment to modify
     partial_assignment = assignment.copy()
 
-    # Check for conflicts with adjacent nodes
+    # Checks for conflicts with adjacent nodes
     for neighbor in graph[var]:
         if partial_assignment[var] in partial_assignment[neighbor]:
             chosen_color = partial_assignment[var]
@@ -151,6 +223,19 @@ def forward_checking(graph, var, assignment):
 
 
 def mac(graph, var, assignment):
+
+    """
+
+    Maintaining arc consistency inference (MAC): uses the AC-3 algorithm to guarantee arc consistency between each node
+    of the graph.
+
+    :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :param var:         (Node) current node variable selected
+    :param assignment:  (dict) dictionary corresponding to the color assignment for each node {node: [color]}
+    :return:            True if consistency is detected, False otherwise
+
+    """
+
     q = get_neighbors(graph)
 
     while len(q) > 0:
@@ -166,6 +251,21 @@ def mac(graph, var, assignment):
 
 
 def revise(x_i, x_j, assignment):
+
+    """
+
+    Implements the revise procedure to implement AC-3. Iterates between each possible color assignment of x_i, and for
+    each color searches for an available node x_j such that the assignment is consistent. Otherwise, it removes the
+    color from the available colors for the x_i node and is_revised is set True.
+
+
+    :param x_i:         (Node) first node to check for arc consistency
+    :param x_j:         (Node) second node to check for arc consistency
+    :param assignment:  (dict) dictionary corresponding to the color assignment for each node {node: [color]}
+    :return:            True if there is a revise of the assignment, False otherwise
+
+    """
+
     is_revised = False
     for x in assignment[x_i]:
         is_consistent = False
@@ -181,6 +281,16 @@ def revise(x_i, x_j, assignment):
 
 
 def get_neighbors(graph):
+
+    """
+
+    Returns the list of neighbors for each node in graph
+
+    :param graph:   (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
+    :return:        (list) list of tuples containing all the neighbors for each node [(node, neighbor)]
+
+    """
+
     arcs = []
     for node in graph:
         for neighbor in graph[node]:
@@ -190,9 +300,23 @@ def get_neighbors(graph):
 
 
 def print_node_color(nodes, nxGraph, assignment, bt_type):
+
+    """
+
+    Used for the color animation of the graph. If it is called in the first iteration of the backtracking algorithm it
+    sets all the nodes color to black, otherwise the colors of the nodes are set based on the assignment evaluated by
+    the algorithm
+
+    :param nodes:       (list) list of Node class instances referring to each node of the graph
+    :param nxGraph:     (nxGraph) nxGraph object used for the graph visualization properties
+    :param assignment:  (dict) dictionary corresponding to the color assignment for each node {node: [color]}
+    :param bt_type:     (String) used to distinguish between FC and MAC algorithm for the different starting condition
+
+    """
+
     colors = {}
 
-    # se siamo nella prima iterazione tutti i nodi sono neri, altrimenti prendono il colore assegnato
+    # In the first iteration all the nodes are black, otherwise the color is set based on assignment color value
     if bt_type == "FC":
         for node in nodes:
             if len(assignment[node.get_label()]) == 3:
@@ -206,9 +330,8 @@ def print_node_color(nodes, nxGraph, assignment, bt_type):
             else:
                 colors[node.get_label()] = assignment[node.get_label()][0]
 
-    # assegna l'attributo "colore" a ciascun nodo del grafo
+    # Assignment of the pos and color attributes for the nx graph
     nx.set_node_attributes(nxGraph, colors, 'color')
-
     pos = nx.get_node_attributes(nxGraph, 'pos')
     colors = nx.get_node_attributes(nxGraph, 'color')
     node_colors = [colors[node.get_label()] for node in nodes]
