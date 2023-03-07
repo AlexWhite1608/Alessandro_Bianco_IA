@@ -9,7 +9,11 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):
 
     """
 
-    Backtrack algorithm using Forward Checking
+    Backtrack algorithm using Forward Checking. At first, we check if the assignment is complete; if not we select a node
+    using the MRV heuristic combined with the degree heuristic. Then we order the domain of the selected variable using
+    Least Constraining Value heuristic and check for consistency. We finally assign the color to the node and then
+    inferences are made (using Forward Checking) and the nodes are correctly colored. We repeat the process until all
+    the nodes are assigned to the right color or there is no possible complete assignment.
 
     :param nxGraph:     (nxGraph)
     :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
@@ -45,7 +49,11 @@ def backtrack_mac(nxGraph, graph, assignment, nodes):
 
     """
 
-    Backtrack algorithm using Maintaining Arc Consistency
+    Backtrack algorithm using Maintaining Arc Consistency. At first, we check if the assignment is complete; if not
+    we select a node using the MRV heuristic combined with the degree heuristic. Then we order the domain of the
+    selected variable using Least Constraining Value heuristic and check for consistency. We finally assign the color
+    to the node and then inferences are made (using MAC) and the nodes are correctly colored. We repeat the process
+    until all the nodes are assigned to the right color or there is no possible complete assignment.
 
     :param nxGraph:     (nxGraph)
     :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
