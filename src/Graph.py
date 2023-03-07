@@ -12,6 +12,7 @@ PAUSE = 0.5
 def create_random_nodes(n_nodes):
 
     """
+
     Creates n_nodes Node class instances with random x,y coordinates.
 
     :param: (int) Number of nodes
@@ -76,6 +77,7 @@ class Graph:
     def __init__(self, n_nodes, save=False):
 
         """
+
         Builds the graph given n_nodes Nodes. It also sets the coordinates from each node to be used for the
         graph generation
 
@@ -102,6 +104,7 @@ class Graph:
     def get_status(self, current_node, nearest_node):
 
         """
+
         Print all the useful data for each edge generation step
 
         :param current_node: (Node) Node class instance that represents the current node of the generation
