@@ -5,7 +5,7 @@ import Graph as G
 COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
 
 
-def backtrack_fc(nxGraph, graph, assignment, nodes):
+def backtrack_fc(nxGraph, graph, assignment, nodes, animate):
 
     """
 
@@ -19,6 +19,7 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):
     :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
     :param assignment:  (dict) dictionary corresponding to the initial color assignment for each node {node: [color]}
     :param nodes:       (list) list of Nodes of the graph
+    :param animate:     (bool) True if we want animation, false otherwise
     :return:            (dict) dictionary corresponding to the final color assignment
 
     """
@@ -35,8 +36,9 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):
                 inferences = forward_checking(graph, var, assignment)
                 if inferences is not None:
                     assignment = inferences
-                    print_node_color(nodes, nxGraph, assignment, "FC")
-                    result = backtrack_fc(nxGraph, graph, assignment, nodes)
+                    if animate:
+                        print_node_color(nodes, nxGraph, assignment, "FC")
+                    result = backtrack_fc(nxGraph, graph, assignment, nodes, animate)
                     if result is not None:
                         return result
             else:
@@ -45,7 +47,7 @@ def backtrack_fc(nxGraph, graph, assignment, nodes):
     return None
 
 
-def backtrack_mac(nxGraph, graph, assignment, nodes):
+def backtrack_mac(nxGraph, graph, assignment, nodes, animate):
 
     """
 
@@ -59,6 +61,7 @@ def backtrack_mac(nxGraph, graph, assignment, nodes):
     :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
     :param assignment:  (dict) dictionary corresponding to the initial color assignment for each node {node: [color]}
     :param nodes:       (list) list of Nodes of the graph
+    :param animate:     (bool) True if we want animation, false otherwise
     :return:            (dict) dictionary corresponding to the final color assignment
 
     """
@@ -74,8 +77,9 @@ def backtrack_mac(nxGraph, graph, assignment, nodes):
                 assignment[var] = [value]
                 inferences = mac(graph, var, assignment)
                 if inferences is not False:
-                    print_node_color(nodes, nxGraph, assignment, "MAC")
-                    result = backtrack_mac(nxGraph, graph, assignment, nodes)
+                    if animate:
+                        print_node_color(nodes, nxGraph, assignment, "MAC")
+                    result = backtrack_mac(nxGraph, graph, assignment, nodes, animate)
                     if result is not None:
                         return result
             else:

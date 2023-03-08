@@ -68,13 +68,13 @@ class Graph:
         self._n_nodes   (int) Number of graph nodes
         self._nodes     (list) List of Node class instances
         self._edges     (list) List of graph edges
-        self._save      (bool) True if saves the graph (.png format), False otherwise
+        self._animate   (bool) True if shows the graph animation, False otherwise
         self._points    (dict) Dict containing the coordinates of each node
         self._graph     (networkx Graph) Stores the networkx Graph information
 
     """
 
-    def __init__(self, n_nodes, save=False):
+    def __init__(self, n_nodes, animate):
 
         """
 
@@ -89,7 +89,7 @@ class Graph:
         self._n_nodes = n_nodes
         self._nodes = create_random_nodes(self._n_nodes)
         self._edges = []
-        self._save = save
+        self._animate = animate
         self._points = self.get_node_coords()
         self._graph = nx.Graph()
 
@@ -281,7 +281,8 @@ class Graph:
         if len(self._edges) < 2:  # No need to check for intersections
             self.build_edge(central_node, distance_ordered_nodes[0])
             self.get_status(central_node, distance_ordered_nodes[0])
-            self.visualize()
+            if self._animate:
+                self.visualize()
 
             return self.generate_edges(distance_ordered_nodes[0])
 
@@ -296,9 +297,8 @@ class Graph:
                         self.build_edge(central_node, distance_ordered_nodes[node])
                         self.get_status(central_node, distance_ordered_nodes[node])
 
-                        # TODO: Fai animazione!
-                        # TODO: sarebbe figo se si potesse vedere che disegna comunque l'edge anche se c'è intersezione (in rosso) e poi lo cancella
-                        self.visualize()
+                        if self._animate:
+                            self.visualize()
 
                         return self.generate_edges(distance_ordered_nodes[node])
 
@@ -332,9 +332,9 @@ class Graph:
             initial_assignment[node] = list(BT.COLORS)
 
         if bt_type == "ForwardChecking":
-            return BT.backtrack_fc(self._graph, graph, initial_assignment, self._nodes)
+            return BT.backtrack_fc(self._graph, graph, initial_assignment, self._nodes, self._animate)
         elif bt_type == "Mac":
-            return BT.backtrack_mac(self._graph, graph, initial_assignment, self._nodes)
+            return BT.backtrack_mac(self._graph, graph, initial_assignment, self._nodes, self._animate)
 
     def visualize(self):
 
@@ -343,14 +343,6 @@ class Graph:
         Visualization of the graph
 
         """
-
-        if self._save:
-            plt.savefig("graph.png")
-
-        fig = plt.figure()
-        plt.figure().clear()
-        plt.close()
-        plt.clf()
 
         nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
         nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='black', node_size=220)
