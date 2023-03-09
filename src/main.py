@@ -3,11 +3,11 @@ from Graph import Node as Node
 
 # CONST VALUES #
 N_NODES = 5
-SAVE_GRAPH = False
+ANIMATION = True
 
 
 def main():
-    graph = Graph(N_NODES, SAVE_GRAPH)
+    graph = Graph(N_NODES, ANIMATION)
     print(graph)
 
     random_node1 = graph.get_random_node()
@@ -15,9 +15,8 @@ def main():
 
     graph.generate_edges(random_node1)
 
-    print("FC: ", graph.backtracking("ForwardChecking"))
-    # print("Mac: ", graph.backtracking("Mac"))
-
+    # print("FC: ", graph.backtracking("ForwardChecking"))
+    print("Mac: ", graph.backtracking("Mac"))
 
 if __name__ == "__main__":
     main()
