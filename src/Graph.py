@@ -9,8 +9,37 @@ import Backtracking as BT
 PAUSE = 0.5
 
 
-def create_random_nodes(n_nodes):
+def create_sym_nodes(n_nodes):
 
+    """
+
+    Creates n_nodes Node class instances such that each node is distant (100 / n_nodes) from each other to make a
+    grid pattern
+
+    :param: (int) Number of nodes
+    :return: (list) list of Node class instances
+
+    """
+
+    nodes = []
+
+    # Evaluates the number of nodes for each grid
+    side = int(math.ceil(math.sqrt(n_nodes)))
+
+    distance = 100.0 / side
+
+    for i in range(n_nodes):
+        row = i // side
+        col = i % side
+        x = col * distance
+        y = row * distance
+        label = str(i)
+        nodes.append(Node(label, x, y))
+
+    return nodes
+
+
+def create_random_nodes(n_nodes):
     """
 
     Creates n_nodes Node class instances with random x,y coordinates.
@@ -31,7 +60,6 @@ def create_random_nodes(n_nodes):
 
 
 class Node:
-
     """
 
     Class that represents each node of the graph.
@@ -59,7 +87,6 @@ class Node:
 
 
 class Graph:
-
     """
 
     Class that represents the graph
@@ -74,20 +101,26 @@ class Graph:
 
     """
 
-    def __init__(self, n_nodes, animate):
+    def __init__(self, n_nodes, animate, symmetrical):
 
         """
 
         Builds the graph given n_nodes Nodes. It also sets the coordinates from each node to be used for the
         graph generation
 
-        :param n_nodes  (int)
-        :param save     (bool) True if saves the graph (.png format), False otherwise
+        :param n_nodes      (int)
+        :param animate      (bool) True if shows animation, False otherwise
+        :param symmetrical  (bool) True if the nodes are in symmetrical arrangement, False if they are arranged randomly
 
         """
 
         self._n_nodes = n_nodes
-        self._nodes = create_random_nodes(self._n_nodes)
+
+        if symmetrical is True:
+            self._nodes = create_sym_nodes(self._n_nodes)
+        elif symmetrical is False:
+            self._nodes = create_random_nodes(self._n_nodes)
+
         self._edges = []
         self._animate = animate
         self._points = self.get_node_coords()
@@ -165,7 +198,7 @@ class Graph:
             if input_node != node:
                 if not self.check_edge(input_node, node):  # if there is already an edge skip
                     node_distance[node.get_label()] = math.dist((input_node.get_x(), input_node.get_y()),
-                                                                  (node.get_x(), node.get_y()))
+                                                                (node.get_x(), node.get_y()))
 
         if len(node_distance) == 0:  # if there are no edges left return None --> ends generate_edges recursion
             return None
@@ -303,10 +336,10 @@ class Graph:
                         return self.generate_edges(distance_ordered_nodes[node])
 
                     else:
-                        continue    # Found intersection
+                        continue  # Found intersection
 
                 else:
-                    continue    # There is already an edge between central_node and nearest node
+                    continue  # There is already an edge between central_node and nearest node
 
             else:
                 return
@@ -345,8 +378,10 @@ class Graph:
         """
 
         nx.draw_networkx_edges(self._graph, nx.get_node_attributes(self._graph, 'pos'))
-        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='black', node_size=220)
-        nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=10, font_color="white")
+        nx.draw_networkx_nodes(self._graph, nx.get_node_attributes(self._graph, 'pos'), node_color='black',
+                               node_size=220)
+        nx.draw_networkx_labels(self._graph, nx.get_node_attributes(self._graph, 'pos'), font_size=10,
+                                font_color="white")
         plt.show()
         plt.pause(PAUSE)
 

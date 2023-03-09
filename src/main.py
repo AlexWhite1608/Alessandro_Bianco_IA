@@ -1,13 +1,14 @@
-from Graph import Graph as Graph
+import Graph as Graph
 from Graph import Node as Node
 
 # CONST VALUES #
-N_NODES = 5
-ANIMATION = True
+N_NODES = 25
+ANIMATION = False
+SYMMETRICAL = False
 
 
 def main():
-    graph = Graph(N_NODES, ANIMATION)
+    graph = Graph.Graph(N_NODES, ANIMATION, SYMMETRICAL)
     print(graph)
 
     random_node1 = graph.get_random_node()
