@@ -191,19 +191,17 @@ def order_domain_values(graph, var, assignment):
     domain = assignment[var]
     neighbors = graph[var]
 
-    # Counts the number of occurrences of each color for each node
-    n_assigned = {value: 0 for value in domain}
-
-    # For each neighbor of var it checks if it has already been assigned a color. In that case it increments n_assigned
-    # corresponding to that color
+    # Create a dictionary that maps each color to the number of times it appears in the domain of the neighboring nodes
+    n_assigned = {}
     for neighbor in neighbors:
         if neighbor in assignment:
-            colors = assignment[neighbor]
-            for color in colors:
-                if color in n_assigned:
-                    n_assigned[color] += 1
+            for color in assignment[neighbor]:
+                n_assigned[color] = n_assigned.get(color, 0) + 1
 
-    return sorted(domain, key=lambda value: n_assigned[value])
+    # Sort the colors in the domain of the variable by their number of occurrences in the neighboring domains
+    sorted_domain = sorted(domain, key=lambda c: n_assigned.get(c, 0))
+
+    return sorted_domain
 
 
 def forward_checking(graph, var, assignment):
