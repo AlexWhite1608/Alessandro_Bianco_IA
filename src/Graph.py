@@ -145,9 +145,10 @@ class Graph:
 
         """
 
-        print("\nCurrent node:", current_node.get_label(), f"{self._points[current_node.get_label()]}")
-        print("Nearest node:", nearest_node.get_label(), f"{self._points[nearest_node.get_label()]}")
-        print("Edge between:", current_node.get_label(), "-", nearest_node.get_label())
+        # TODO: COMMENTI
+        # print("\nCurrent node:", current_node.get_label(), f"{self._points[current_node.get_label()]}")
+        # print("Nearest node:", nearest_node.get_label(), f"{self._points[nearest_node.get_label()]}")
+        # print("Edge between:", current_node.get_label(), "-", nearest_node.get_label())
 
     def get_random_node(self):
 
