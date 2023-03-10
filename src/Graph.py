@@ -289,8 +289,8 @@ class Graph:
         if intx.do_bounding_boxes_intersect(a1, a2, b1, b2) \
                 and intx.line_segment_crosses_line(line_segment_a, line_segment_b) \
                 and intx.line_segment_crosses_line(line_segment_b, line_segment_a):
-            print(f"Found intersection between: {self.get_node_from_coords(a2)} - {self.get_node_from_coords(a1)} "
-                  f"and {self.get_node_from_coords(b2)} - {self.get_node_from_coords(b1)}")
+            # print(f"Found intersection between: {self.get_node_from_coords(a2)} - {self.get_node_from_coords(a1)} "
+            #       f"and {self.get_node_from_coords(b2)} - {self.get_node_from_coords(b1)}")
 
             return True
 

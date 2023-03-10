@@ -4,7 +4,7 @@ import src.Graph as Graph
 import matplotlib.pyplot as plt
 
 # CONST VALUES #
-N_NODES = 12
+N_NODES = 20
 ANIMATION = False
 
 
@@ -13,6 +13,7 @@ ANIMATION = False
 def generate_graph(ax1_title, ax2_title, ax3_title, ax4_title, ax1_data, ax2_data, ax3_data, ax4_data):
     # Creiamo una figura con quattro assi verticali
     fig, axs = plt.subplots(4, sharex=True)
+
 
     # Impostiamo i titoli per gli assi
     axs[0].set_title(ax1_title)
@@ -74,11 +75,11 @@ def time_performance_test():
         print("Symmetric graph solution MAC: ", sym_graph.backtracking("Mac"))
         end_time_sym_MAC = time.time()
 
-        ran_FC_data[i] = (end_time_ran_FC - start_time_ran_FC)
-        ran_MAC_data[i] = (end_time_ran_MAC - start_time_ran_MAC)
+        ran_FC_data[i] = (end_time_ran_FC - start_time_ran_FC) * 1000
+        ran_MAC_data[i] = (end_time_ran_MAC - start_time_ran_MAC) * 1000
 
-        sym_FC_data[i] = (end_time_sym_FC - start_time_sym_FC)
-        sym_MAC_data[i] = (end_time_sym_MAC - start_time_sym_MAC)
+        sym_FC_data[i] = (end_time_sym_FC - start_time_sym_FC) * 1000
+        sym_MAC_data[i] = (end_time_sym_MAC - start_time_sym_MAC) * 1000
 
         del random_graph, sym_graph
 
