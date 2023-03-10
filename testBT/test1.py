@@ -1,11 +1,10 @@
 import time
 
 import src.Graph as Graph
-import src.Backtracking as BT
 import matplotlib.pyplot as plt
 
 # CONST VALUES #
-N_NODES = 10
+N_NODES = 12
 ANIMATION = False
 
 
@@ -34,6 +33,7 @@ def generate_graph(ax1_title, ax2_title, ax3_title, ax4_title, ax1_data, ax2_dat
     axs[3].plot(data4_x, data4_y)
 
     # Mostriamo il grafico
+    plt.tight_layout()
     plt.show()
 
 
