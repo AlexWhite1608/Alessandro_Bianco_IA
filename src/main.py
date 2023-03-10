@@ -1,5 +1,5 @@
 import Graph as Graph
-from Graph import Node as Node
+from testBT import test1
 
 # CONST VALUES #
 N_NODES = 25
@@ -8,16 +8,20 @@ SYMMETRICAL = False
 
 
 def main():
-    graph = Graph.Graph(N_NODES, ANIMATION, SYMMETRICAL)
-    print(graph)
+    # graph = Graph.Graph(N_NODES, ANIMATION, SYMMETRICAL)
+    # print(graph)
+    #
+    # random_node1 = graph.get_random_node()
+    # print("RANDOM: ", random_node1.get_label())
+    #
+    # graph.generate_edges(random_node1)
+    #
+    # # print("FC: ", graph.backtracking("ForwardChecking"))
+    # print("Mac: ", graph.backtracking("Mac"))
 
-    random_node1 = graph.get_random_node()
-    print("RANDOM: ", random_node1.get_label())
+    test1.time_performance_test()
 
-    graph.generate_edges(random_node1)
 
-    # print("FC: ", graph.backtracking("ForwardChecking"))
-    print("Mac: ", graph.backtracking("Mac"))
 
 if __name__ == "__main__":
     main()
