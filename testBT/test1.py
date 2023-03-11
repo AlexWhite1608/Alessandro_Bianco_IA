@@ -1,10 +1,12 @@
 import time
+import timeit
 
 import src.Graph as Graph
 import matplotlib.pyplot as plt
 
 # CONST VALUES #
-N_NODES = 30
+N_NODES = 10
+N_ITER = 50
 
 
 # TODO: FAI CON 4 COLORI!!!!
@@ -86,3 +88,52 @@ def sym_graph_MAC(graph):
     end_time = time.time()
 
     return end_time - start_time
+
+
+def test_timeit():
+    # testo l'esecuzione dei due algoritmi N volte su un grafo random e su uno simmetrico facendo variare magari il numero di nodi
+
+    random_graph = Graph.Graph(N_NODES, False, False)
+    sym_graph = Graph.Graph(N_NODES, False, True)
+
+    starting_node_random = random_graph.get_random_node()
+    starting_node_sym = sym_graph.get_random_node()
+
+    random_graph.generate_edges(starting_node_random)
+    sym_graph.generate_edges(starting_node_sym)
+
+    random_graph_times_FC, sym_graph_times_FC = list(), list()
+    random_graph_times_MAC, sym_graph_times_MAC = list(), list()
+
+    for i in range(1, N_ITER + 1):
+        random_graph_times_FC.append(timeit.timeit(lambda: random_graph.backtracking("ForwardChecking"), number=1) * 1000)
+        sym_graph_times_FC.append(timeit.timeit(lambda: sym_graph.backtracking("ForwardChecking"), number=1) * 1000)
+
+        random_graph_times_MAC.append(timeit.timeit(lambda: random_graph.backtracking("Mac"), number=1) * 1000)
+        sym_graph_times_MAC.append(timeit.timeit(lambda: sym_graph.backtracking("Mac"), number=1) * 1000)
+
+    # Grafico per i grafi random
+    fig, ax = plt.subplots()
+    ax.plot(range(1, N_ITER + 1), random_graph_times_FC, label="Forward Checking")
+    ax.plot(range(1, N_ITER + 1), random_graph_times_MAC, label="Mac")
+    ax.set_title(f"Random Graph Performance ({N_NODES} Nodes)")
+    ax.set_xlabel("Number of executions")
+    ax.set_ylabel("Execution time (ms)")
+    ax.set_yscale('log')
+    ax.set_xticks(range(0, N_ITER + 1, 5))
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
+
+    # Grafico per i grafi sìmmetrici
+    fig, ax = plt.subplots()
+    ax.plot(range(1, N_ITER + 1), sym_graph_times_FC, label="Forward Checking")
+    ax.plot(range(1, N_ITER + 1), sym_graph_times_MAC, label="Mac")
+    ax.set_title(f"Symmetric Graph Performance ({N_NODES} Nodes)")
+    ax.set_xlabel("Number of executions")
+    ax.set_ylabel("Execution time (ms)")
+    ax.set_yscale('log')
+    ax.set_xticks(range(0, N_ITER + 1, 5))
+    ax.legend()
+    plt.tight_layout()
+    plt.show()

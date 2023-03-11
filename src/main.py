@@ -19,8 +19,8 @@ def main():
     # # print("FC: ", graph.backtracking("ForwardChecking"))
     # print("Mac: ", graph.backtracking("Mac"))
 
-    test1.time_performance_test()
-
+    # test1.time_performance_test()
+    test1.test_timeit()
 
 
 if __name__ == "__main__":
