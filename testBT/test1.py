@@ -9,7 +9,6 @@ N_NODES = 10
 N_ITER = 50
 
 
-# TODO: FAI CON 4 COLORI!!!!
 # Confronta tempi per risoluzione con mappa random e mappa simmetrica
 def time_performance_test():
     ran_FC_data, sym_FC_data = [], []
@@ -112,6 +111,16 @@ def test_timeit():
         random_graph_times_MAC.append(timeit.timeit(lambda: random_graph.backtracking("Mac"), number=1) * 1000)
         sym_graph_times_MAC.append(timeit.timeit(lambda: sym_graph.backtracking("Mac"), number=1) * 1000)
 
+    avg_time_random_FC = calculate_average(random_graph_times_FC)
+    avg_time_sym_FC = calculate_average(sym_graph_times_FC)
+    avg_time_random_MAC = calculate_average(random_graph_times_MAC)
+    avg_time_sym_MAC = calculate_average(sym_graph_times_MAC)
+
+    print("Random FC: ", avg_time_random_FC)
+    print("Sym FC: ", avg_time_sym_FC)
+    print("Random MAC: ", avg_time_random_MAC)
+    print("Sym MAC: ", avg_time_sym_MAC)
+
     # Grafico per i grafi random
     fig, ax = plt.subplots()
     ax.plot(range(1, N_ITER + 1), random_graph_times_FC, label="Forward Checking")
@@ -120,7 +129,7 @@ def test_timeit():
     ax.set_xlabel("Number of executions")
     ax.set_ylabel("Execution time (ms)")
     ax.set_yscale('log')
-    ax.set_xticks(range(0, N_ITER + 1, 5))
+    ax.set_xticks(range(0, N_ITER, 5))
     ax.legend()
     plt.tight_layout()
     plt.show()
@@ -133,7 +142,20 @@ def test_timeit():
     ax.set_xlabel("Number of executions")
     ax.set_ylabel("Execution time (ms)")
     ax.set_yscale('log')
-    ax.set_xticks(range(0, N_ITER + 1, 5))
+    ax.set_xticks(range(0, N_ITER, 5))
     ax.legend()
     plt.tight_layout()
     plt.show()
+
+
+def calculate_average(times):
+    total = 0
+    count = 0
+    for num in times:
+        total += num
+        count += 1
+    average = total / count
+    return round(average, 3)
+
+# TODO: CONFRONTA TEMPI TRA COLORAZIONE K3 E K4
+
