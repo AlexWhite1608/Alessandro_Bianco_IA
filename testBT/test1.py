@@ -5,8 +5,8 @@ import src.Graph as Graph
 import matplotlib.pyplot as plt
 
 # CONST VALUES #
-N_NODES = 10
-N_ITER = 50
+N_NODES = 12
+N_ITER = 10
 
 
 # Confronta tempi per risoluzione con mappa random e mappa simmetrica
@@ -104,45 +104,49 @@ def test_timeit():
     random_graph_times_FC, sym_graph_times_FC = list(), list()
     random_graph_times_MAC, sym_graph_times_MAC = list(), list()
 
-    for i in range(1, N_ITER + 1):
-        random_graph_times_FC.append(timeit.timeit(lambda: random_graph.backtracking("ForwardChecking"), number=1) * 1000)
-        sym_graph_times_FC.append(timeit.timeit(lambda: sym_graph.backtracking("ForwardChecking"), number=1) * 1000)
+    avg_time_random_FC, avg_time_sym_FC = list(), list()
+    avg_time_random_MAC, avg_time_sym_MAC = list(), list()
 
-        random_graph_times_MAC.append(timeit.timeit(lambda: random_graph.backtracking("Mac"), number=1) * 1000)
-        sym_graph_times_MAC.append(timeit.timeit(lambda: sym_graph.backtracking("Mac"), number=1) * 1000)
+    for n in range(1, N_NODES + 1):
+        for i in range(1, N_ITER + 1):
+            random_graph_times_FC.append(timeit.timeit(lambda: random_graph.backtracking("ForwardChecking"), number=1) * 1000)
+            sym_graph_times_FC.append(timeit.timeit(lambda: sym_graph.backtracking("ForwardChecking"), number=1) * 1000)
 
-    avg_time_random_FC = calculate_average(random_graph_times_FC)
-    avg_time_sym_FC = calculate_average(sym_graph_times_FC)
-    avg_time_random_MAC = calculate_average(random_graph_times_MAC)
-    avg_time_sym_MAC = calculate_average(sym_graph_times_MAC)
+            random_graph_times_MAC.append(timeit.timeit(lambda: random_graph.backtracking("Mac"), number=1) * 1000)
+            sym_graph_times_MAC.append(timeit.timeit(lambda: sym_graph.backtracking("Mac"), number=1) * 1000)
 
-    print("Random FC: ", avg_time_random_FC)
-    print("Sym FC: ", avg_time_sym_FC)
-    print("Random MAC: ", avg_time_random_MAC)
-    print("Sym MAC: ", avg_time_sym_MAC)
+        avg_time_random_FC.append(calculate_average(random_graph_times_FC))
+        avg_time_sym_FC.append(calculate_average(sym_graph_times_FC))
+        avg_time_random_MAC.append(calculate_average(random_graph_times_MAC))
+        avg_time_sym_MAC.append(calculate_average(sym_graph_times_MAC))
+
+    # print("Random FC: ", avg_time_random_FC)
+    # print("Sym FC: ", avg_time_sym_FC)
+    # print("Random MAC: ", avg_time_random_MAC)
+    # print("Sym MAC: ", avg_time_sym_MAC)
 
     # Grafico per i grafi random
     fig, ax = plt.subplots()
-    ax.plot(range(1, N_ITER + 1), random_graph_times_FC, label="Forward Checking")
-    ax.plot(range(1, N_ITER + 1), random_graph_times_MAC, label="Mac")
-    ax.set_title(f"Random Graph Performance ({N_NODES} Nodes)")
-    ax.set_xlabel("Number of executions")
-    ax.set_ylabel("Execution time (ms)")
+    ax.plot(range(1, N_NODES + 1), avg_time_random_FC, label="Forward Checking")
+    ax.plot(range(1, N_NODES + 1), avg_time_random_MAC, label="Mac")
+    ax.set_title(f"Random Graph Performance ({N_NODES} Nodes, {N_ITER} Iterations)")
+    ax.set_xlabel("Number of Nodes")
+    ax.set_ylabel("Average Execution Time (ms)")
     ax.set_yscale('log')
-    ax.set_xticks(range(0, N_ITER, 5))
+    ax.set_xticks(range(1, N_NODES + 1))
     ax.legend()
     plt.tight_layout()
     plt.show()
 
     # Grafico per i grafi sìmmetrici
     fig, ax = plt.subplots()
-    ax.plot(range(1, N_ITER + 1), sym_graph_times_FC, label="Forward Checking")
-    ax.plot(range(1, N_ITER + 1), sym_graph_times_MAC, label="Mac")
-    ax.set_title(f"Symmetric Graph Performance ({N_NODES} Nodes)")
-    ax.set_xlabel("Number of executions")
-    ax.set_ylabel("Execution time (ms)")
+    ax.plot(range(1, N_NODES + 1), avg_time_sym_FC, label="Forward Checking")
+    ax.plot(range(1, N_NODES + 1), avg_time_sym_MAC, label="Mac")
+    ax.set_title(f"Symmetric Graph Performance ({N_NODES} Nodes, {N_ITER} Iterations)")
+    ax.set_xlabel("Number of Nodes")
+    ax.set_ylabel("Average Execution Time (ms)")
     ax.set_yscale('log')
-    ax.set_xticks(range(0, N_ITER, 5))
+    ax.set_xticks(range(1, N_NODES + 1))
     ax.legend()
     plt.tight_layout()
     plt.show()
