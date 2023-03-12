@@ -5,7 +5,7 @@ import src.Graph as Graph
 import matplotlib.pyplot as plt
 
 # CONST VALUES #
-N_NODES = 100
+N_NODES = 20
 N_ITER = 30
 
 
@@ -16,6 +16,8 @@ def time_performance_test():
 
     for n_nodes in range(1, N_NODES + 1):
         graph = Graph.Graph(N_NODES, False, False)
+
+        graph.generate_edges(graph.get_random_node())
 
         start_time = time.time()
         graph.backtracking("ForwardChecking")
@@ -29,6 +31,7 @@ def time_performance_test():
     plt.plot(range(1, N_NODES + 1), mac_times, label='MAC')
     plt.xlabel('Number of nodes')
     plt.ylabel('Execution time (s)')
+    plt.yscale('log')
     plt.title('Comparison of FC and MAC backtracking')
     plt.legend()
     plt.show()
