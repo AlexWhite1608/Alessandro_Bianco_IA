@@ -5,88 +5,33 @@ import src.Graph as Graph
 import matplotlib.pyplot as plt
 
 # CONST VALUES #
-N_NODES = 12
-N_ITER = 10
+N_NODES = 100
+N_ITER = 30
 
 
 # Confronta tempi per risoluzione con mappa random e mappa simmetrica
 def time_performance_test():
-    ran_FC_data, sym_FC_data = [], []
-    ran_MAC_data, sym_MAC_data = [], []
+    fc_times = []
+    mac_times = []
 
-    for i in range(2, N_NODES):
-        random_graph = Graph.Graph(i, False, False)
-        sym_graph = Graph.Graph(i, False, True)
+    for n_nodes in range(1, N_NODES + 1):
+        graph = Graph.Graph(N_NODES, False, False)
 
-        starting_node_random = random_graph.get_random_node()
-        starting_node_sym = sym_graph.get_random_node()
+        start_time = time.time()
+        graph.backtracking("ForwardChecking")
+        fc_times.append(time.time() - start_time)
 
-        random_graph.generate_edges(starting_node_random)
-        sym_graph.generate_edges(starting_node_sym)
+        start_time = time.time()
+        graph.backtracking("Mac")
+        mac_times.append(time.time() - start_time)
 
-        ran_FC_time = random_graph_FC(random_graph)
-        ran_MAC_time = random_graph_MAC(random_graph)
-        sym_FC_time = sym_graph_FC(sym_graph)
-        sym_MAC_time = sym_graph_MAC(sym_graph)
-
-        ran_FC_data.append((i, ran_FC_time))
-        ran_MAC_data.append((i, ran_MAC_time))
-        sym_FC_data.append((i, sym_FC_time))
-        sym_MAC_data.append((i, sym_MAC_time))
-
-        del random_graph, sym_graph
-
-    # Grafico per i grafi random
-    fig, ax = plt.subplots()
-    ax.plot([x[0] for x in ran_FC_data], [x[1] for x in ran_FC_data], label="Forward Checking")
-    ax.plot([x[0] for x in ran_MAC_data], [x[1] for x in ran_MAC_data], label="MAC")
-    ax.set_title("Random Graph Performance")
-    ax.set_xlabel("Number of nodes")
-    ax.set_ylabel("Execution time (ms)")
-    ax.legend()
+    plt.plot(range(1, N_NODES + 1), fc_times, label='FC')
+    plt.plot(range(1, N_NODES + 1), mac_times, label='MAC')
+    plt.xlabel('Number of nodes')
+    plt.ylabel('Execution time (s)')
+    plt.title('Comparison of FC and MAC backtracking')
+    plt.legend()
     plt.show()
-
-    # Grafico per i grafi simmetrici
-    fig, ax = plt.subplots()
-    ax.plot([x[0] for x in sym_FC_data], [x[1] for x in sym_FC_data], label="Forward Checking")
-    ax.plot([x[0] for x in sym_MAC_data], [x[1] for x in sym_MAC_data], label="MAC")
-    ax.set_title("Symmetric Graph Performance")
-    ax.set_xlabel("Number of nodes")
-    ax.set_ylabel("Execution time (ms)")
-    ax.legend()
-    plt.show()
-
-
-def random_graph_FC(graph):
-    start_time = time.time()
-    graph.backtracking("ForwardChecking")
-    end_time = time.time()
-
-    return end_time - start_time
-
-
-def random_graph_MAC(graph):
-    start_time = time.time()
-    graph.backtracking("Mac")
-    end_time = time.time()
-
-    return end_time - start_time
-
-
-def sym_graph_FC(graph):
-    start_time = time.time()
-    graph.backtracking("ForwardChecking")
-    end_time = time.time()
-
-    return end_time - start_time
-
-
-def sym_graph_MAC(graph):
-    start_time = time.time()
-    graph.backtracking("Mac")
-    end_time = time.time()
-
-    return end_time - start_time
 
 
 def test_timeit():
@@ -120,10 +65,10 @@ def test_timeit():
         avg_time_random_MAC.append(calculate_average(random_graph_times_MAC))
         avg_time_sym_MAC.append(calculate_average(sym_graph_times_MAC))
 
-    # print("Random FC: ", avg_time_random_FC)
-    # print("Sym FC: ", avg_time_sym_FC)
-    # print("Random MAC: ", avg_time_random_MAC)
-    # print("Sym MAC: ", avg_time_sym_MAC)
+    print("Random FC: ", avg_time_random_FC)
+    print("Sym FC: ", avg_time_sym_FC)
+    print("Random MAC: ", avg_time_random_MAC)
+    print("Sym MAC: ", avg_time_sym_MAC)
 
     # Grafico per i grafi random
     fig, ax = plt.subplots()

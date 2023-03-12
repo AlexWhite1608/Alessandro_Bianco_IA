@@ -1,9 +1,11 @@
+import time
+
 import Graph as Graph
 from testBT import test1
 
 # CONST VALUES #
-N_NODES = 25
-ANIMATION = False
+N_NODES = 8
+ANIMATION = True
 SYMMETRICAL = False
 
 
@@ -19,8 +21,8 @@ def main():
     # # print("FC: ", graph.backtracking("ForwardChecking"))
     # print("Mac: ", graph.backtracking("Mac"))
 
-    # test1.time_performance_test()
-    test1.test_timeit()
+    test1.time_performance_test()
+    # test1.test_timeit()
 
 
 if __name__ == "__main__":
