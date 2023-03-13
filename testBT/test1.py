@@ -1,12 +1,12 @@
 import time
 import timeit
-
+import pandas as pd
 import src.Graph as Graph
 import matplotlib.pyplot as plt
 
 # CONST VALUES #
-N_NODES = 20
-N_ITER = 30
+N_NODES = 10
+N_ITER = 300
 
 
 # Confronta tempi per risoluzione con mappa random e mappa simmetrica
@@ -73,6 +73,10 @@ def test_timeit():
     print("Random MAC: ", avg_time_random_MAC)
     print("Sym MAC: ", avg_time_sym_MAC)
 
+    pd.set_option('display.max_columns', None)
+    print(pd.DataFrame({'Nodes': range(1, N_NODES+1), 'Ran FC time': avg_time_random_FC, 'Ran MAC time': avg_time_random_MAC,
+                        'Sym FC time': avg_time_sym_FC, 'Sym MAC time': avg_time_sym_MAC}))
+
     # Grafico per i grafi random
     fig, ax = plt.subplots()
     ax.plot(range(1, N_NODES + 1), avg_time_random_FC, label="Forward Checking")
@@ -98,6 +102,26 @@ def test_timeit():
     ax.legend()
     plt.tight_layout()
     plt.show()
+
+
+def backtracking_times():
+    fc_times = []
+    mac_times = []
+
+    for n_nodes in range(1, N_NODES+1):
+        graph = Graph.Graph(N_NODES, False, False)
+
+        graph.generate_edges(graph.get_random_node())
+
+        start_time = time.time()
+        graph.backtracking("ForwardChecking")
+        fc_times.append((time.time() - start_time) * 1000)
+
+        start_time = time.time()
+        graph.backtracking("Mac")
+        mac_times.append((time.time() - start_time) * 1000)
+
+    return pd.DataFrame({'Nodes': range(1, N_NODES+1), 'FC time': fc_times, 'MAC time': mac_times})
 
 
 def calculate_average(times):
