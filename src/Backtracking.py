@@ -25,6 +25,7 @@ def backtrack_fc(nxGraph, graph, assignment, nodes, animate):
     """
 
     if check_assignment_complete(graph, assignment) is True:
+        print("FC: ", assignment)
         return assignment
 
     var = select_unassigned_variable(nxGraph, graph, assignment)
@@ -67,6 +68,7 @@ def backtrack_mac(nxGraph, graph, assignment, nodes, animate):
     """
 
     if check_assignment_complete(graph, assignment) is True:
+        print("MAC:", assignment)
         return assignment
 
     var = select_unassigned_variable(nxGraph, graph, assignment)

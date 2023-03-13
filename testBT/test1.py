@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from src.Backtracking import COLORS
 
 # CONST VALUES #
-N_NODES = 15
+N_NODES = 40
 N_ITER = 50
 
 
@@ -88,6 +88,40 @@ def calculate_average(times):
         count += 1
     average = total / count
     return round(average, 3)
+
+
+def test_main():
+
+    times_FC = []
+    times_MAC = []
+
+    for i in range(1, N_NODES + 1):
+        graph = Graph.Graph(i, False, False)
+        starting_node = graph.get_random_node()
+        graph.generate_edges(starting_node)
+
+        # start_time_FC = time.time()
+        # graph.backtracking("ForwardChecking")
+        # end_time_FC = time.time()
+
+        start_time_MAC = time.time()
+        graph.backtracking("Mac")
+        end_time_MAC = time.time()
+
+        # times_FC.append((end_time_FC - start_time_FC) * 1000)
+        times_MAC.append((end_time_MAC - start_time_MAC) * 1000)
+
+    fig, ax = plt.subplots()
+    # ax.plot(range(1, N_NODES + 1), times_FC, label="Forward Checking")
+    ax.plot([times_MAC.index(x) for x in times_MAC if times_MAC.index(x) != 0], [x for x in times_MAC if times_MAC.index(x) != 0], label="Mac")
+    ax.set_title(f"Time performance")
+    ax.set_xlabel("Number of Nodes")
+    ax.set_ylabel("Execution Time (ms)")
+    ax.set_xticks([times_MAC.index(x) for x in times_MAC if times_MAC.index(x) != 0])
+    ax.set_yscale('log')
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
 
 
 def comparison_k3_k4():

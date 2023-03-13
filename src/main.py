@@ -4,25 +4,27 @@ import Graph as Graph
 from testBT import test1
 
 # CONST VALUES #
-N_NODES = 30
+N_NODES = 20
 ANIMATION = False
 SYMMETRICAL = False
 
 
 def main():
-    # graph = Graph.Graph(N_NODES, ANIMATION, SYMMETRICAL)
-    # print(graph)
+    # for i in range(1, N_NODES + 1):
+    #     graph = Graph.Graph(i, ANIMATION, SYMMETRICAL)
+    #     # print(graph)
     #
-    # random_node1 = graph.get_random_node()
-    # print("RANDOM: ", random_node1.get_label())
+    #     random_node1 = graph.get_random_node()
+    #     # print("RANDOM: ", random_node1.get_label())
     #
-    # graph.generate_edges(random_node1)
+    #     graph.generate_edges(random_node1)
     #
-    # print("FC: ", graph.backtracking("ForwardChecking"))
-    # # print("Mac: ", graph.backtracking("Mac"))
+    #     graph.backtracking("ForwardChecking")
+    #     # print("Mac: ", graph.backtracking("Mac"))
 
-    # test1.time_performance_test()
-    test1.comparison_k3_k4()
+    # test1.test_timeit()
+    # test1.comparison_k3_k4()
+    test1.test_main()
 
 
 if __name__ == "__main__":
