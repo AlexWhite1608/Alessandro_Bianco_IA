@@ -19,12 +19,12 @@ def main():
     #
     #     graph.generate_edges(random_node1)
     #
-    #     graph.backtracking("ForwardChecking")
-    #     # print("Mac: ", graph.backtracking("Mac"))
+    #     # graph.backtracking("ForwardChecking")
+    #     graph.backtracking("Mac")
 
     # test1.test_timeit()
     # test1.comparison_k3_k4()
-    test1.test_main()
+    test1.time_performance()
 
 
 if __name__ == "__main__":

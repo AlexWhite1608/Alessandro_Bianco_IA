@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from src.Backtracking import COLORS
 
 # CONST VALUES #
-N_NODES = 40
+N_NODES = 20
 N_ITER = 50
 
 
@@ -90,7 +90,7 @@ def calculate_average(times):
     return round(average, 3)
 
 
-def test_main():
+def time_performance():
 
     times_FC = []
     times_MAC = []
@@ -100,25 +100,22 @@ def test_main():
         starting_node = graph.get_random_node()
         graph.generate_edges(starting_node)
 
-        # start_time_FC = time.time()
-        # graph.backtracking("ForwardChecking")
-        # end_time_FC = time.time()
+        time_FC = timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1)
+        time_MAC = timeit.timeit(lambda: graph.backtracking("Mac"), number=1)
 
-        start_time_MAC = time.time()
-        graph.backtracking("Mac")
-        end_time_MAC = time.time()
+        times_FC.append(time_FC * 1000)
+        times_MAC.append(time_MAC * 1000)
 
-        # times_FC.append((end_time_FC - start_time_FC) * 1000)
-        times_MAC.append((end_time_MAC - start_time_MAC) * 1000)
+    pd.set_option('display.max_columns', None)
+    print(pd.DataFrame({'Nodes': range(1, N_NODES + 1), 'FC': times_FC, 'MAC': times_MAC}))
 
     fig, ax = plt.subplots()
-    # ax.plot(range(1, N_NODES + 1), times_FC, label="Forward Checking")
-    ax.plot([times_MAC.index(x) for x in times_MAC if times_MAC.index(x) != 0], [x for x in times_MAC if times_MAC.index(x) != 0], label="Mac")
+    ax.plot(range(1, N_NODES + 1), times_FC, label="Forward Checking")
+    ax.plot(range(1, N_NODES + 1), times_MAC, label="Mac")
     ax.set_title(f"Time performance")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Execution Time (ms)")
-    ax.set_xticks([times_MAC.index(x) for x in times_MAC if times_MAC.index(x) != 0])
-    ax.set_yscale('log')
+    ax.set_xticks(range(1, N_NODES + 1))
     ax.legend()
     plt.tight_layout()
     plt.show()
@@ -190,7 +187,6 @@ def comparison_k3_k4():
     plt.tight_layout()
     plt.show()
 
-# TODO: confronta il numero di fallimenti dei due algoritmi all'aumentare del numero dei nodi in relazione alle iterazioni
-#       cioè esegui N_ITER volte il codice e vedi quante volte ha fallito
+
 
 
