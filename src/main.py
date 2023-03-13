@@ -1,11 +1,11 @@
 import time
-
+from Backtracking import COLORS
 import Graph as Graph
 from testBT import test1
 
 # CONST VALUES #
-N_NODES = 8
-ANIMATION = True
+N_NODES = 30
+ANIMATION = False
 SYMMETRICAL = False
 
 
@@ -18,11 +18,11 @@ def main():
     #
     # graph.generate_edges(random_node1)
     #
-    # # print("FC: ", graph.backtracking("ForwardChecking"))
-    # print("Mac: ", graph.backtracking("Mac"))
+    # print("FC: ", graph.backtracking("ForwardChecking"))
+    # # print("Mac: ", graph.backtracking("Mac"))
 
     # test1.time_performance_test()
-    test1.test_timeit()
+    test1.comparison_k3_k4()
 
 
 if __name__ == "__main__":
