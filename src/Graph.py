@@ -305,6 +305,8 @@ class Graph:
         (first element of the list of the nearest nodes). Then recursively applies the function to the new central_node
         until there are no more connections left in the graph
 
+        :param central_node (Node) the starting node for the generation of the edges
+
         """
 
         distance_ordered_nodes = self.find_nearest_node(central_node)
