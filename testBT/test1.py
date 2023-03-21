@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from src.Backtracking import COLORS
 
 # CONST VALUES #
-N_NODES = 20
+N_NODES = 26
 N_ITER = 15
 
 
@@ -124,21 +124,17 @@ def comparison_k3_k4():
     times_FC_k3, times_MAC_k3 = list(), list()
     times_FC_k4, times_MAC_k4 = list(), list()
 
-    avg_times_FC_k3, avg_times_MAC_k3 = list(), list()
-    avg_times_FC_k4, avg_times_MAC_k4 = list(), list()
-
     # TEMPI K3
     for n in range(1, N_NODES + 1):
         graph = Graph.Graph(n, False, False)
         starting_node = graph.get_random_node()
         graph.generate_edges(starting_node)
 
-        for i in range(1, N_ITER + 1):
-            times_FC_k3.append(timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1) * 1000)
-            times_MAC_k3.append(timeit.timeit(lambda: graph.backtracking("Mac"), number=1) * 1000)
+        time_FC = timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1)
+        time_MAC = timeit.timeit(lambda: graph.backtracking("Mac"), number=1)
 
-        avg_times_FC_k3.append(calculate_average(times_FC_k3))
-        avg_times_MAC_k3.append(calculate_average(times_MAC_k3))
+        times_FC_k3.append(time_FC * 1000)
+        times_MAC_k3.append(time_MAC * 1000)
 
     # TEMPI K4
     COLORS.add('yellow')
@@ -148,38 +144,39 @@ def comparison_k3_k4():
         starting_node = graph.get_random_node()
         graph.generate_edges(starting_node)
 
-        for i in range(1, N_ITER + 1):
-            times_FC_k4.append(timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1) * 1000)
-            times_MAC_k4.append(timeit.timeit(lambda: graph.backtracking("Mac"), number=1) * 1000)
+        time_FC = timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1)
+        time_MAC = timeit.timeit(lambda: graph.backtracking("Mac"), number=1)
 
-        avg_times_FC_k4.append(calculate_average(times_FC_k4))
-        avg_times_MAC_k4.append(calculate_average(times_MAC_k4))
+        times_FC_k4.append(time_FC * 1000)
+        times_MAC_k4.append(time_MAC * 1000)
 
     pd.set_option('display.max_columns', None)
-    print(pd.DataFrame({'Nodes': range(1, N_NODES+1), 'K3 FC time': avg_times_FC_k3, 'K3 MAC time': avg_times_MAC_k3,
-                        'K4 FC time': avg_times_FC_k4, 'K4 MAC time': avg_times_MAC_k4}))
+    print(pd.DataFrame({'Nodes': range(1, N_NODES+1), 'K3 FC time': times_FC_k3, 'K3 MAC time': times_MAC_k3,
+                        'K4 FC time': times_FC_k4, 'K4 MAC time': times_MAC_k4}))
 
     # Grafico per k3
     fig, ax = plt.subplots()
-    ax.plot(range(1, N_NODES + 1), avg_times_FC_k3, label="Forward Checking")
-    ax.plot(range(1, N_NODES + 1), avg_times_MAC_k3, label="Mac")
+    ax.plot(range(1, N_NODES + 1), times_FC_k3, label="Forward Checking")
+    ax.plot(range(1, N_NODES + 1), times_MAC_k3, label="Mac")
     ax.set_title(f"K3 Graph Performance ({N_NODES} Nodes, {N_ITER} Iterations)")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Average Execution Time (ms)")
     ax.set_xticks(range(1, N_NODES + 1))
     ax.legend()
+    ax.set_yscale('log')
     plt.tight_layout()
     plt.show()
 
     # Grafico per k4
     fig, ax = plt.subplots()
-    ax.plot(range(1, N_NODES + 1), avg_times_FC_k4, label="Forward Checking")
-    ax.plot(range(1, N_NODES + 1), avg_times_MAC_k4, label="Mac")
+    ax.plot(range(1, N_NODES + 1), times_FC_k4, label="Forward Checking")
+    ax.plot(range(1, N_NODES + 1), times_MAC_k4, label="Mac")
     ax.set_title(f"K4 Graph Performance ({N_NODES} Nodes, {N_ITER} Iterations)")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Average Execution Time (ms)")
     ax.set_xticks(range(1, N_NODES + 1))
     ax.legend()
+    ax.set_yscale('log')
     plt.tight_layout()
     plt.show()
 

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import Graph as G
 
-COLORS = {'red', 'green', 'blue'}  # TODO: aggiungere anche k4
+COLORS = {'red', 'green', 'blue'}
 
 
 def backtrack_fc(nxGraph, graph, assignment, nodes, animate):
