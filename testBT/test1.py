@@ -7,11 +7,10 @@ from src.Backtracking import COLORS
 
 # CONST VALUES #
 N_NODES = 20
-N_ITER = 50
+N_ITER = 15
 
 
 # Confronta tempi per risoluzione con mappa random e mappa simmetrica
-
 
 def test_timeit():
     # testo l'esecuzione dei due algoritmi N volte su un grafo random e su uno simmetrico facendo variare magari il numero di nodi
@@ -122,12 +121,6 @@ def time_performance():
 
 
 def comparison_k3_k4():
-    graph = Graph.Graph(N_NODES, False, False)
-
-    starting_node = graph.get_random_node()
-
-    graph.generate_edges(starting_node)
-
     times_FC_k3, times_MAC_k3 = list(), list()
     times_FC_k4, times_MAC_k4 = list(), list()
 
@@ -136,6 +129,10 @@ def comparison_k3_k4():
 
     # TEMPI K3
     for n in range(1, N_NODES + 1):
+        graph = Graph.Graph(n, False, False)
+        starting_node = graph.get_random_node()
+        graph.generate_edges(starting_node)
+
         for i in range(1, N_ITER + 1):
             times_FC_k3.append(timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1) * 1000)
             times_MAC_k3.append(timeit.timeit(lambda: graph.backtracking("Mac"), number=1) * 1000)
@@ -147,17 +144,16 @@ def comparison_k3_k4():
     COLORS.add('yellow')
 
     for n in range(1, N_NODES + 1):
+        graph = Graph.Graph(n, False, False)
+        starting_node = graph.get_random_node()
+        graph.generate_edges(starting_node)
+
         for i in range(1, N_ITER + 1):
             times_FC_k4.append(timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1) * 1000)
             times_MAC_k4.append(timeit.timeit(lambda: graph.backtracking("Mac"), number=1) * 1000)
 
         avg_times_FC_k4.append(calculate_average(times_FC_k4))
         avg_times_MAC_k4.append(calculate_average(times_MAC_k4))
-
-    # print("Random FC: ", avg_time_random_FC)
-    # print("Sym FC: ", avg_time_sym_FC)
-    # print("Random MAC: ", avg_time_random_MAC)
-    # print("Sym MAC: ", avg_time_sym_MAC)
 
     pd.set_option('display.max_columns', None)
     print(pd.DataFrame({'Nodes': range(1, N_NODES+1), 'K3 FC time': avg_times_FC_k3, 'K3 MAC time': avg_times_MAC_k3,

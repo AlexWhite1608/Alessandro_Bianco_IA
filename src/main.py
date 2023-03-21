@@ -4,7 +4,7 @@ import Graph as Graph
 from testBT import test1
 
 # CONST VALUES #
-N_NODES = 20
+N_NODES = 25
 ANIMATION = False
 SYMMETRICAL = False
 
@@ -19,12 +19,12 @@ def main():
     #
     #     graph.generate_edges(random_node1)
     #
-    #     # graph.backtracking("ForwardChecking")
-    #     graph.backtracking("Mac")
+    #     graph.backtracking("ForwardChecking")
+    #     # graph.backtracking("Mac")
 
     # test1.test_timeit()
-    # test1.comparison_k3_k4()
-    test1.time_performance()
+    test1.comparison_k3_k4()
+    # test1.time_performance()
 
 
 if __name__ == "__main__":
