@@ -1,11 +1,13 @@
 import time
+
+from matplotlib import pyplot as plt
 from Backtracking import COLORS
 import Graph as Graph
 from testBT import test1
 
 # CONST VALUES #
-N_NODES = 10
-ANIMATION = True
+N_NODES = 20
+ANIMATION = False
 SYMMETRICAL = False
 
 

@@ -150,7 +150,7 @@ def select_unassigned_variable(nxGraph, graph, assignment):
 
     """
 
-    Selects the unassigned nodes from the graph following the MRV heuristic
+    Selects the unassigned nodes from the graph following the LRV heuristic
 
     :param nxGraph:     (nxGraph)
     :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
@@ -266,7 +266,7 @@ def revise(x_i, x_j, assignment):
 
     """
 
-    Implements the revise procedure to implement AC-3. Iterates between each possible color assignment of x_i, and for
+    Implements the revise procedure to execute AC-3. Iterates between each possible color assignment of x_i, and for
     each color searches for an available node x_j such that the assignment is consistent. Otherwise, it removes the
     color from the available colors for the x_i node and is_revised is set True.
 
