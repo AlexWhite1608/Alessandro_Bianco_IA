@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from src.Backtracking import COLORS
 
 # CONST VALUES #
-N_NODES = 20
+N_NODES = 100
 N_ITER = 15
 
 
@@ -164,7 +164,14 @@ def comparison_k3_k4():
     ax.set_title(f"K3 Graph Performance ({N_NODES} Nodes)")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Average Execution Time (ms)")
-    ax.set_xticks(range(1, N_NODES + 1))
+
+    if N_NODES <= 30:
+        ax.set_xticks(range(1, N_NODES + 1))
+    elif 30 <= N_NODES <= 50:
+        ax.set_xticks(range(1, N_NODES + 1, 5))
+    elif N_NODES >= 100:
+        ax.set_xticks(range(1, N_NODES + 1, 10))
+
     ax.legend()
     ax.set_yscale('log')
     plt.tight_layout()
@@ -177,7 +184,14 @@ def comparison_k3_k4():
     ax.set_title(f"K4 Graph Performance ({N_NODES} Nodes)")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Average Execution Time (ms)")
-    ax.set_xticks(range(1, N_NODES + 1))
+
+    if N_NODES <= 30:
+        ax.set_xticks(range(1, N_NODES + 1))
+    elif 30 <= N_NODES <= 50:
+        ax.set_xticks(range(1, N_NODES + 1, 5))
+    elif N_NODES >= 100:
+        ax.set_xticks(range(1, N_NODES + 1, 10))
+
     ax.legend()
     ax.set_yscale('log')
     plt.tight_layout()
