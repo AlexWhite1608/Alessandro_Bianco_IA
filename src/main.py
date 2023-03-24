@@ -6,8 +6,8 @@ import Graph as Graph
 from testBT import test1
 
 # CONST VALUES #
-N_NODES = 20
-ANIMATION = False
+N_NODES = 8
+ANIMATION = True
 SYMMETRICAL = False
 
 
@@ -20,8 +20,8 @@ def main():
 
     graph.generate_edges(random_node1)
 
-    graph.backtracking("ForwardChecking")
-    # graph.backtracking("Mac")
+    # graph.backtracking("ForwardChecking")
+    graph.backtracking("Mac")
 
     # TEST
     # test1.comparison_k3_k4()
