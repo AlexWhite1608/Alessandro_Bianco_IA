@@ -24,7 +24,8 @@ def main():
     # graph.backtracking("Mac")
 
     # TEST
-    test1.comparison_k3_k4()
+    # test1.comparison_k3_k4()
+    test1.test_failed_assignment()
 
 
 if __name__ == "__main__":

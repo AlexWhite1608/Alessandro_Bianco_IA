@@ -45,7 +45,7 @@ def backtrack_fc(nxGraph, graph, assignment, nodes, animate):
             else:
                 assignment[var].remove(value)
 
-    return False, print("No assignment found")
+    return False
 
 
 def backtrack_mac(nxGraph, graph, assignment, nodes, animate):
@@ -87,7 +87,7 @@ def backtrack_mac(nxGraph, graph, assignment, nodes, animate):
             else:
                 assignment[var].remove(value)
 
-    return False, print("No assignment found")
+    return False
 
 
 def check_value_consistent(var, value, graph, assignment):
