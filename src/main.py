@@ -6,19 +6,19 @@ import Graph as Graph
 from testBT import test1
 
 # CONST VALUES #
-N_NODES = 10
+N_NODES = 8
 ANIMATION = True
 SYMMETRICAL = False
-BT_TYPE = "Mac"
+BT_TYPE = "ForwardChecking"
 
 
 def main():
-    #FIXME: togli il simmetrical bro
+    #FIXME: togli il simmetrical e animation a sto punto bro
 
     # TEST
     test1.test_graph_visualization(N_NODES, ANIMATION, SYMMETRICAL, BT_TYPE)
-    test1.comparison_k3_k4()
-    test1.test_failed_assignment()
+    # test1.comparison_k3_k4()
+    # test1.test_failed_assignment()
 
 
 if __name__ == "__main__":
