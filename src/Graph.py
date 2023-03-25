@@ -317,8 +317,6 @@ class Graph:
         if len(self._edges) < 2:  # No need to check for intersections
             self.build_edge(central_node, distance_ordered_nodes[0])
             self.get_status(central_node, distance_ordered_nodes[0])
-            if self._animate:
-                self.visualize()
 
             return self.generate_edges(distance_ordered_nodes[0])
 
@@ -332,9 +330,6 @@ class Graph:
 
                         self.build_edge(central_node, distance_ordered_nodes[node])
                         self.get_status(central_node, distance_ordered_nodes[node])
-
-                        if self._animate:
-                            self.visualize()
 
                         return self.generate_edges(distance_ordered_nodes[node])
 

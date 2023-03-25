@@ -9,6 +9,7 @@ from src.Backtracking import COLORS
 N_NODES = 50
 N_ITER = 20
 
+
 def comparison_k3_k4():
     times_FC_k3, times_MAC_k3 = list(), list()
     times_FC_k4, times_MAC_k4 = list(), list()
@@ -87,8 +88,8 @@ def comparison_k3_k4():
     plt.tight_layout()
     plt.show()
 
-def test_failed_assignment():
 
+def test_failed_assignment():
     fails_FC_k3, fails_FC_k4 = [], []
     fails_MAC_k3, fails_MAC_k4 = [], []
 
@@ -154,4 +155,18 @@ def test_failed_assignment():
     ax.legend()
     plt.tight_layout()
     plt.show()
+
+
+def test_graph_visualization(n_nodes, animate, symmetrical, bt_type):
+    graph = Graph.Graph(n_nodes, animate, symmetrical)
+    print(graph)
+
+    random_node1 = graph.get_random_node()
+    print("Starting node: ", random_node1.get_label())
+
+    graph.generate_edges(random_node1)
+    graph.visualize()
+
+    if not graph.backtracking(bt_type):
+        print(f"There is no solution with 3 colors using {bt_type}")
 
