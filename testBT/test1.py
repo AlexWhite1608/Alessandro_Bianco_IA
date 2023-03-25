@@ -1,6 +1,8 @@
 import timeit
 
 import pandas as pd
+from matplotlib.ticker import MaxNLocator
+
 import src.Graph as Graph
 import matplotlib.pyplot as plt
 from src.Backtracking import COLORS
@@ -139,6 +141,7 @@ def test_failed_assignment():
     ax.set_title(f"K3 failed assignments ({N_NODES} Nodes, {N_ITER} Iterations)")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Number of failed assignments")
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
     ax.legend()
     plt.tight_layout()
@@ -151,6 +154,7 @@ def test_failed_assignment():
     ax.set_title(f"K4 failed assignments ({N_NODES} Nodes, {N_ITER} Iterations)")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Number of failed assignments")
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
     ax.legend()
     plt.tight_layout()
