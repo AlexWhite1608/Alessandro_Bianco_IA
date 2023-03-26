@@ -1,14 +1,12 @@
 import timeit
-
 import pandas as pd
 from matplotlib.ticker import MaxNLocator
-
 import src.Graph as Graph
 import matplotlib.pyplot as plt
 from src.Backtracking import COLORS
 
 # CONST VALUES #
-N_NODES = 50
+N_NODES = 80
 N_ITER = 20
 
 
@@ -18,12 +16,12 @@ def comparison_k3_k4():
 
     # TEMPI K3
     for n in range(1, N_NODES + 1):
-        graph = Graph.Graph(n, False, False)
+        graph = Graph.Graph(n)
         starting_node = graph.get_random_node()
         graph.generate_edges(starting_node)
 
-        time_FC = timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1)
-        time_MAC = timeit.timeit(lambda: graph.backtracking("Mac"), number=1)
+        time_FC = timeit.timeit(lambda: graph.backtracking("ForwardChecking", animate=False), number=1)
+        time_MAC = timeit.timeit(lambda: graph.backtracking("Mac", animate=False), number=1)
 
         times_FC_k3.append(time_FC * 1000)
         times_MAC_k3.append(time_MAC * 1000)
@@ -34,12 +32,12 @@ def comparison_k3_k4():
     COLORS.add('yellow')
 
     for n in range(1, N_NODES + 1):
-        graph = Graph.Graph(n, False, False)
+        graph = Graph.Graph(n)
         starting_node = graph.get_random_node()
         graph.generate_edges(starting_node)
 
-        time_FC = timeit.timeit(lambda: graph.backtracking("ForwardChecking"), number=1)
-        time_MAC = timeit.timeit(lambda: graph.backtracking("Mac"), number=1)
+        time_FC = timeit.timeit(lambda: graph.backtracking("ForwardChecking", animate=False), number=1)
+        time_MAC = timeit.timeit(lambda: graph.backtracking("Mac", animate=False), number=1)
 
         times_FC_k4.append(time_FC * 1000)
         times_MAC_k4.append(time_MAC * 1000)
@@ -100,28 +98,28 @@ def test_failed_assignment():
         counter_fc_k4, counter_mac_k4 = 0, 0
 
         for n in range(1, N_ITER + 1):
-            graph = Graph.Graph(j, False, False)
+            graph = Graph.Graph(j)
             starting_node = graph.get_random_node()
             graph.generate_edges(starting_node)
 
-            if graph.backtracking("ForwardChecking") == False:
+            if graph.backtracking("ForwardChecking", animate=False) == False:
                 counter_fc_k3 += 1
 
-            if graph.backtracking("Mac") == False:
+            if graph.backtracking("Mac", animate=False) == False:
                 counter_mac_k3 += 1
 
         # TEMPI K4
         COLORS.add('yellow')
 
         for n in range(1, N_ITER + 1):
-            graph = Graph.Graph(j, False, False)
+            graph = Graph.Graph(j)
             starting_node = graph.get_random_node()
             graph.generate_edges(starting_node)
 
-            if graph.backtracking("ForwardChecking") == False:
+            if graph.backtracking("ForwardChecking", animate=False) == False:
                 counter_fc_k4 += 1
 
-            if graph.backtracking("Mac") == False:
+            if graph.backtracking("Mac", animate=False) == False:
                 counter_mac_k4 += 1
 
         fails_FC_k3.append(counter_fc_k3)
@@ -161,8 +159,8 @@ def test_failed_assignment():
     plt.show()
 
 
-def test_graph_visualization(n_nodes, animate, symmetrical, bt_type):
-    graph = Graph.Graph(n_nodes, animate, symmetrical)
+def test_graph_visualization(n_nodes, bt_type):
+    graph = Graph.Graph(n_nodes)
     print(graph)
 
     random_node1 = graph.get_random_node()
@@ -171,6 +169,6 @@ def test_graph_visualization(n_nodes, animate, symmetrical, bt_type):
     graph.generate_edges(random_node1)
     graph.visualize()
 
-    if not graph.backtracking(bt_type):
+    if not graph.backtracking(bt_type, animate=True):
         print(f"There is no solution with 3 colors using {bt_type}")
 

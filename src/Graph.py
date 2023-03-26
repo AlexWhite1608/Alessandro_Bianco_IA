@@ -9,36 +9,6 @@ import Backtracking as BT
 PAUSE = 0.5
 
 
-def create_sym_nodes(n_nodes):
-
-    """
-
-    Creates n_nodes Node class instances such that each node is distant (100 / n_nodes) from each other to make a
-    grid pattern
-
-    :param: (int) Number of nodes
-    :return: (list) list of Node class instances
-
-    """
-
-    nodes = []
-
-    # Evaluates the number of nodes for each grid
-    side = int(math.ceil(math.sqrt(n_nodes)))
-
-    distance = 100.0 / side
-
-    for i in range(n_nodes):
-        row = i // side
-        col = i % side
-        x = col * distance
-        y = row * distance
-        label = str(i)
-        nodes.append(Node(label, x, y))
-
-    return nodes
-
-
 def create_random_nodes(n_nodes):
     """
 
@@ -101,7 +71,7 @@ class Graph:
 
     """
 
-    def __init__(self, n_nodes, animate, symmetrical):
+    def __init__(self, n_nodes):
 
         """
 
@@ -109,20 +79,12 @@ class Graph:
         graph generation
 
         :param n_nodes      (int)
-        :param animate      (bool) True if shows animation, False otherwise
-        :param symmetrical  (bool) True if the nodes are in symmetrical arrangement, False if they are arranged randomly
 
         """
 
         self._n_nodes = n_nodes
-
-        if symmetrical is True:
-            self._nodes = create_sym_nodes(self._n_nodes)
-        elif symmetrical is False:
-            self._nodes = create_random_nodes(self._n_nodes)
-
+        self._nodes = create_random_nodes(self._n_nodes)
         self._edges = []
-        self._animate = animate
         self._points = self.get_node_coords()
         self._graph = nx.Graph()
 
@@ -145,7 +107,6 @@ class Graph:
 
         """
 
-        # TODO: COMMENTI
         # print("\nCurrent node:", current_node.get_label(), f"{self._points[current_node.get_label()]}")
         # print("Nearest node:", nearest_node.get_label(), f"{self._points[nearest_node.get_label()]}")
         # print("Edge between:", current_node.get_label(), "-", nearest_node.get_label())
@@ -290,6 +251,7 @@ class Graph:
         if intx.do_bounding_boxes_intersect(a1, a2, b1, b2) \
                 and intx.line_segment_crosses_line(line_segment_a, line_segment_b) \
                 and intx.line_segment_crosses_line(line_segment_b, line_segment_a):
+
             # print(f"Found intersection between: {self.get_node_from_coords(a2)} - {self.get_node_from_coords(a1)} "
             #       f"and {self.get_node_from_coords(b2)} - {self.get_node_from_coords(b1)}")
 
@@ -342,12 +304,13 @@ class Graph:
             else:
                 return
 
-    def backtracking(self, bt_type):
+    def backtracking(self, bt_type, animate):
 
         """
 
         Backtracking algorithm to find the graph-colouring solution in two different ways (FC/MAC)
 
+        :param animate: (Bool) If True, it shows the backtracking colors animation
         :param bt_type: (String) "ForwardChecking" or "Mac"
 
         """
@@ -363,9 +326,9 @@ class Graph:
             initial_assignment[node] = list(BT.COLORS)
 
         if bt_type == "ForwardChecking":
-            return BT.backtrack_fc(self._graph, graph, initial_assignment, self._nodes, self._animate)
+            return BT.backtrack_fc(self._graph, graph, initial_assignment, self._nodes, animate)
         elif bt_type == "Mac":
-            return BT.backtrack_mac(self._graph, graph, initial_assignment, self._nodes, self._animate)
+            return BT.backtrack_mac(self._graph, graph, initial_assignment, self._nodes, animate)
 
     def visualize(self):
 
