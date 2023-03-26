@@ -11,6 +11,15 @@ N_ITER = 20
 
 
 def comparison_k3_k4():
+
+    """
+
+    in this test a comparison is made on the execution times of the two backtracking algorithms both when you have
+    3 colors available for assignment (k3), and when you have 4 (k4). It generates N_NODES graph and it measures the
+    execution time with time.timeit()
+
+    """
+
     times_FC_k3, times_MAC_k3 = list(), list()
     times_FC_k4, times_MAC_k4 = list(), list()
 
@@ -90,6 +99,16 @@ def comparison_k3_k4():
 
 
 def test_failed_assignment():
+
+    """
+
+    In this test the number of assignments failed by the two algorithms is measured both for k3 and k4 colors.
+    Several graph instances are generated, each with an increasing number of nodes N_NODES. Subsequently,
+    the process of creating the graph is iterated N_ITER times, and it is verified how many times the assignment
+    of colors to the nodes is not possible
+
+    """
+
     fails_FC_k3, fails_FC_k4 = [], []
     fails_MAC_k3, fails_MAC_k4 = [], []
 
@@ -160,6 +179,18 @@ def test_failed_assignment():
 
 
 def test_graph_visualization(n_nodes, bt_type):
+
+    """
+
+    This test is used to visualize the construction of the graph and the consequent application
+    of the two different backtracking algorithms. If no solution is found by the algorithms, prints an error
+    on the console
+
+    :param n_nodes: (int) Number of nodes of the graph
+    :param bt_type: (String) ForwardChecking or Mac
+
+    """
+
     graph = Graph.Graph(n_nodes)
     print(graph)
 
