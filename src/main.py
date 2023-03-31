@@ -9,7 +9,7 @@ def main():
 
     # TEST
     # test.test_graph_visualization(N_NODES, BT_TYPE)
-    test.comparison_k3_k4()
+    test.time_comparison()
     # test.test_failed_assignment()
 
 

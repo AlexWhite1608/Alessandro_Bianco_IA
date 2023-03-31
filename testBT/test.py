@@ -10,16 +10,15 @@ N_NODES = 80
 N_ITER = 20
 
 
-def comparison_k3_k4():
+def time_comparison():
     """
 
-    in this test a comparison is made on the execution times of the two backtracking algorithms both when you have
-    3 colors available for assignment (k3), and when you have 4 (k4). It generates N_NODES graph and it measures the
-    execution time with time.timeit()
+    in this test a comparison is made on the execution times of the two backtracking algorithms. It generates N_NODES
+    graph, and it measures the execution time with time.timeit()
 
     """
 
-    times_FC_k3, times_MAC_k3 = list(), list()
+    times_FC, times_MAC = list(), list()
 
     for n in range(1, N_NODES + 1):
         graph = Graph.Graph(n)
@@ -29,14 +28,14 @@ def comparison_k3_k4():
         time_FC = timeit.timeit(lambda: graph.backtracking("ForwardChecking", animate=False), number=1)
         time_MAC = timeit.timeit(lambda: graph.backtracking("Mac", animate=False), number=1)
 
-        times_FC_k3.append(time_FC * 1000)
-        times_MAC_k3.append(time_MAC * 1000)
+        times_FC.append(time_FC * 1000)
+        times_MAC.append(time_MAC * 1000)
 
         del graph
 
     fig, ax = plt.subplots()
-    ax.plot(range(1, N_NODES + 1), times_FC_k3, label="Forward Checking")
-    ax.plot(range(1, N_NODES + 1), times_MAC_k3, label="Mac")
+    ax.plot(range(1, N_NODES + 1), times_FC, label="Forward Checking")
+    ax.plot(range(1, N_NODES + 1), times_MAC, label="Mac")
     ax.set_title("K" + str(len(COLORS)) + f" Graph Performance ({N_NODES} Nodes)")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Average Execution Time (ms)")
@@ -57,15 +56,15 @@ def comparison_k3_k4():
 def test_failed_assignment():
     """
 
-    In this test the number of assignments failed by the two algorithms is measured both for k3 and k4 colors.
+    In this test the number of assignments failed by the two algorithms is measured.
     Several graph instances are generated, each with an increasing number of nodes N_NODES. Subsequently,
     the process of creating the graph is iterated N_ITER times, and it is verified how many times the assignment
     of colors to the nodes is not possible
 
     """
 
-    fails_FC_k3 = []
-    fails_MAC_k3 = []
+    fails_FC = []
+    fails_MAC = []
 
     for j in range(1, N_NODES + 1, 5):
         counter_fc_k3, counter_mac_k3 = 0, 0
@@ -81,15 +80,15 @@ def test_failed_assignment():
             if graph.backtracking("Mac", animate=False) == False:
                 counter_mac_k3 += 1
 
-        fails_FC_k3.append(counter_fc_k3)
-        fails_MAC_k3.append(counter_mac_k3)
+        fails_FC.append(counter_fc_k3)
+        fails_MAC.append(counter_mac_k3)
 
-    print("Fallimenti FC: ", fails_FC_k3)
-    print("Fallimenti MAC: ", fails_MAC_k3)
+    print("Fallimenti FC: ", fails_FC)
+    print("Fallimenti MAC: ", fails_MAC)
 
     fig, ax = plt.subplots()
-    ax.plot(range(1, N_NODES + 1, 5), fails_FC_k3, label="Forward Checking")
-    ax.plot(range(1, N_NODES + 1, 5), fails_MAC_k3, label="Mac")
+    ax.plot(range(1, N_NODES + 1, 5), fails_FC, label="Forward Checking")
+    ax.plot(range(1, N_NODES + 1, 5), fails_MAC, label="Mac")
     ax.set_title("K" + str(len(COLORS)) + f" failed assignments ({N_NODES} Nodes, {N_ITER} Iterations)")
     ax.set_xlabel("Number of Nodes")
     ax.set_ylabel("Number of failed assignments")
