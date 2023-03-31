@@ -1,9 +1,8 @@
 from testBT import test
 
 # CONST VALUES #
-N_NODES = 11
-ANIMATION = True
-BT_TYPE = "ForwardChecking"     # "Mac"
+N_NODES = 15
+BT_TYPE = "Mac"
 
 
 def main():
@@ -11,7 +10,7 @@ def main():
     # TEST
     # test.test_graph_visualization(N_NODES, BT_TYPE)
     test.comparison_k3_k4()
-    test.test_failed_assignment()
+    # test.test_failed_assignment()
 
 
 if __name__ == "__main__":
