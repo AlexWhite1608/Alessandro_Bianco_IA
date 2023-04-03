@@ -1,12 +1,11 @@
 import timeit
-import pandas as pd
 from matplotlib.ticker import MaxNLocator
 import src.Graph as Graph
 import matplotlib.pyplot as plt
 from src.Backtracking import COLORS
 
 # CONST VALUES #
-N_NODES = 80
+N_NODES = 100
 N_ITER = 20
 
 
@@ -41,14 +40,13 @@ def time_comparison():
     ax.set_ylabel("Average Execution Time (ms)")
 
     if N_NODES <= 30:
-        ax.set_xticks(range(1, N_NODES + 1, 2))
+        ax.set_xticks(range(0, N_NODES + 1, 2))
     elif 30 <= N_NODES <= 50:
-        ax.set_xticks(range(1, N_NODES + 1, 5))
+        ax.set_xticks(range(0, N_NODES + 1, 5))
     elif N_NODES >= 100:
-        ax.set_xticks(range(1, N_NODES + 1, 10))
+        ax.set_xticks(range(0, N_NODES + 1, 10))
 
     ax.legend()
-    ax.set_yscale('log')
     plt.tight_layout()
     plt.show()
 
