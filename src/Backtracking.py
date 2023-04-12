@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import Graph as G
 
-COLORS = {'red', 'green', 'blue'}
+COLORS = {'red', 'green', 'blue'}   # Add another color, like "yellow"
 
 
 def backtrack_fc(nxGraph, graph, assignment, nodes, animate):
@@ -133,7 +133,7 @@ def check_assignment_complete(graph, assignment):
     """
 
     for node in assignment:
-        if len(assignment[node]) > 1:
+        if len(assignment[node]) > 1:   # There are still values to be removed from the domain!
             return False
 
     for node in graph:
@@ -150,7 +150,7 @@ def select_unassigned_variable(nxGraph, graph, assignment):
 
     """
 
-    Selects the unassigned nodes from the graph following the LRV heuristic
+    Selects the unassigned nodes from the graph
 
     :param nxGraph:     (nxGraph)
     :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
@@ -181,7 +181,7 @@ def order_domain_values(graph, var, assignment):
 
     """
 
-    Orders the domain of each variable following the Least-Constraining-Value heuristic
+    Orders the domain of each variable
 
     :param graph:       (dict) dictionary corresponding to the structure of the graph {node: [neighbors]}
     :param var:         (Node) current node variable selected

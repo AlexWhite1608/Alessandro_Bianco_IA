@@ -1,6 +1,6 @@
 # Introduction
 
-This project is used to solve the map-colouring problem with backtracking algorithm of a random generated graph. 
+This project is used to solve a map-colouring problem using a backtracking algorithm. 
 The main goal is to compare the performance of the two inference algorithms: *Forward Checking* vs 
 *Maintaining Arc Consistency*.
 
@@ -28,8 +28,8 @@ the correct structure of the graph, using graphical visualization, and the perfo
 
 In the **main.py** file we have three different functions called:
 
-- **Test.test_graph_visualization(N_NODES, BT_TYPE)**: used to visualize the graph randomly generated with *N_NODES* number 
-of nodes and *BT_TYPE* of backtracking algorithm applied. We can choose the number of the nodes of the graph simply changing
+- **Test.test_graph_visualization(N_NODES, BT_TYPE)**: used to visualize the randomly generated graph with *N_NODES* number 
+of nodes and *BT_TYPE* of backtracking algorithm applied. We can choose the number of the nodes of the graph simply by changing
 the *N_NODES* constant parameter as well as changing the type of backtracking algorithm by setting *BT_TYPE* parameter to
 the string *"ForwardChecking"* or *"Mac"*.
 

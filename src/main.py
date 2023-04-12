@@ -2,14 +2,13 @@ from testBT import Test
 
 # CONST VALUES #
 N_NODES = 15
-BT_TYPE = "Mac"
+BT_TYPE = "ForwardChecking"     # Change me to "Mac"!
 
 
 def main():
 
-    # TEST
-    # Test.test_graph_visualization(N_NODES, BT_TYPE)
-    Test.time_comparison()
+    Test.test_graph_visualization(N_NODES, BT_TYPE)
+    # Test.time_comparison()
     # Test.test_failed_assignment()
 
 
